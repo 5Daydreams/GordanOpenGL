@@ -2,19 +2,42 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 aPos;\n"
-"void main()\n"
-"{\n"
-"    gl_Position = vec4(aPos.x,aPos.y,aPos.z,1.0);\n"
-"}\0";
+#include"shaderClass.h"
+#include"VAO.h"
+#include"VBO.h"
+#include"EBO.h"
 
-const char* fragmentShaderSource = "#version 330 core\n"
-"out vec4 FragColor;\n"
-"void main()\n"
-"{\n"
-"    FragColor = vec4(0.8,0.3,0.02,1.0);\n"
-"}\n\0";
+GLfloat verticesTri[] =
+{
+	-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
+	+0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
+	+0.0f, +0.5f * float(sqrt(3)) * 2 / 3, 0.0f,
+	-0.5f / 2, +0.5f * float(sqrt(3)) / 6, 0.0f,
+	+0.5f / 2, +0.5f * float(sqrt(3)) / 6, 0.0f,
+	+0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f
+};
+
+GLfloat verticesQuad[] =
+{
+	-0.5f,-0.5f, 0.0f,
+	+0.5f,-0.5f, 0.0f,
+	+0.5f,+0.5f, 0.0f,
+	-0.5f,+0.5f, 0.0f
+};
+
+GLuint indicesTri[]
+{
+	0, 3, 5,
+	3, 2, 4,
+	5, 4, 1
+};
+
+GLuint indicesQuad[]
+{
+	0, 1, 2,
+	0, 2, 3
+};
+
 
 int main()
 {
@@ -25,13 +48,6 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLfloat vertices[] =
-	{
-		-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-		+0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-		+0.0f, +0.5f * float(sqrt(3)) * 2 / 3, 0.0f
-	};
-
 	// create a window
 	GLFWmonitor* fullscreen = NULL;
 	int width = 800;
@@ -40,7 +56,7 @@ int main()
 
 	if (window == NULL)
 	{
-		std::cout << "Failed to create GLFW window. \n" << std::endl;
+		std::cout << "Failed to create GLFW window." << std::endl;
 		glfwTerminate();
 		return -1;
 	}
@@ -54,69 +70,53 @@ int main()
 	// viewport size, as in, where we want to render at
 	glViewport(0, 0, width, height);
 
+	// Generates Shader object using defualt.vert and default.frag shaders
+	Shader shaderProgram("default.vert", "default.frag");
 
-	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-	glCompileShader(vertexShader);
+	// Generates Vertex Array Object and binds it
+	VAO VAO1;
+	VAO1.Bind();
 
-	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-	glCompileShader(fragmentShader);
+	// Generates Vertex Buffer Object and links it to vertices
+	VBO VBO1(verticesTri, sizeof(verticesTri));
+	// Generates Element Buffer Object and links it to indices
+	EBO EBO1(indicesTri, sizeof(indicesTri));
 
-	GLuint shaderProgram = glCreateProgram();
-	glAttachShader(shaderProgram, vertexShader);
-	glAttachShader(shaderProgram, fragmentShader);
-	glLinkProgram(shaderProgram);
-
-	glDeleteShader(vertexShader);
-	glDeleteShader(fragmentShader);
-
-	// Vertex Buffer Object, and Vertex Array Object
-	GLuint VAO;
-	GLuint VBO;
-
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-
-	glBindVertexArray(VAO);
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	const int ValuesPerVertex = 3;
-	glVertexAttribPointer(0, ValuesPerVertex, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-	// camera's clear flags as a solid color
-	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-	glfwSwapBuffers(window);
+	// Links VBO to VAO
+	VAO1.LinkVBO(VBO1, 0);
+	// Unbind all to prevent accidentally modifying them
+	VAO1.Unbind();
+	VBO1.Unbind();
+	EBO1.Unbind();
 
 	while (!glfwWindowShouldClose(window))
 	{
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glUseProgram(shaderProgram);
-		glBindVertexArray(VAO);
+		shaderProgram.Activate();
+		VAO1.Bind();
+
+		//const int startingIndex = 0;
+		//const int vertexCount = 3;
+		//glDrawArrays(GL_TRIANGLES, startingIndex, vertexCount);
 
 		const int startingIndex = 0;
-		const int vertexCount = 3;
-		glDrawArrays(GL_TRIANGLES, startingIndex, vertexCount );
+		const int indexCount = 9;
+		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		// if this is not done, window will be unresponsive
 		glfwPollEvents();
 	}
 
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteProgram(shaderProgram);
+	// Deleting abstracted GPU objects
+	VAO1.Delete();
+	VBO1.Delete();
+	EBO1.Delete();
+	shaderProgram.Delete();
 
-	// cleaning up window reference and glfw context
+	// cleaning up window reference and then glfw context (YES, IN THAT ORDER!!)
 	glfwDestroyWindow(window);
 	glfwTerminate();
 
