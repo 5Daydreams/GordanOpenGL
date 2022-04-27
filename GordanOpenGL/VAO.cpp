@@ -10,7 +10,12 @@ VAO::VAO()
 void VAO::LinkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type, GLsizeiptr stride, void* offset)
 {
 	VBO.Bind();
+	
+	// GL_FALSE here refers to normalization:
 	glVertexAttribPointer(layout, numComponents, type, GL_FALSE, stride, offset);
+	// normalized (from docs)
+	// - For glVertexAttribPointer, specifies whether fixed - point data values should be normalized(GL_TRUE) or converted directly as fixed - point values(GL_FALSE) when they are accessed.
+
 	glEnableVertexAttribArray(layout);
 	VBO.Unbind();
 }
