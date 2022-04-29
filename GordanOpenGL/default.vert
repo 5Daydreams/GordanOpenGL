@@ -6,20 +6,28 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aColor;
 // TextureCoords
 layout (location = 2) in vec2 aTex;
+// Normals (not necessarily normalized)
+layout (location = 3) in vec3 aNormal;
 
 // out means this will be passed to the frag shaders
 out vec3 color;
-
 out vec2 texCoord;
+out vec3 Normal;
+out vec3 crntPos;
 
+// Imports the camera view * projection matrix from the main function
 uniform mat4 camMatrix;
+// Imports the object's model matrix from the main function
+uniform mat4 model;
 
 void main()
 {
-	// Outputs the positions/coordinates of all vertices
-	gl_Position = camMatrix * vec4(aPos, 1.0);
+	// adjusting position to world space 
+	crntPos = vec3(model * vec4(aPos, 1.0f));
+	gl_Position = camMatrix * vec4(crntPos, 1.0);
 	
-	// Assigns the Vertex Colors to the "color" out-vec3 (needs to be out to be passed between from vertex to fragment shaders)
+	// setting values into "out" variables
 	color = aColor;
 	texCoord = aTex;
+	Normal = aNormal;
 }
