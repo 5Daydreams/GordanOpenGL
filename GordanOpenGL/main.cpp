@@ -45,25 +45,25 @@ GLfloat verticesPyramid[] =
 GLfloat verticesPyramidLighting[] =
 { //     COORDINATES     /        COLORS          /    TexCoord   /        NORMALS       //
 	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 5.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 2.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 2.0f, 2.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 2.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
 
 	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 2.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 1.0f, 2.0f,     -0.8f, 0.5f,  0.0f, // Left Side
 
-	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 2.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
 	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 1.0f, 2.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
 
 	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.8f, 0.5f,  0.0f, // Right side
+	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 2.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
+	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 1.0f, 2.0f,      0.8f, 0.5f,  0.0f, // Right side
 
-	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 5.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
+	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 2.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
 	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 2.5f, 5.0f,      0.0f, 0.5f,  0.8f  // Facing side
+	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 1.0f, 2.0f,      0.0f, 0.5f,  0.8f  // Facing side
 };
 
 GLuint indicesTri[]
@@ -230,7 +230,7 @@ int main()
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 
-	Texture texture("Ghost_Alvin_512.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	Texture texture("PebblesTile.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
 	texture.texUnit(shaderProgram, "tex0", 0);
 
 	glEnable(GL_DEPTH_TEST);
@@ -242,6 +242,10 @@ int main()
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		lightPos.x = sin(glfwGetTime());
+		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightPos);
+		glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix));
+
 		// camera events
 		camera.Inputs(window);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
@@ -250,6 +254,7 @@ int main()
 		shaderProgram.Activate();
 
 		// Passing the camera position vector as a uniform to the object's shader file
+		glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 		// Passing the camera model * projection matrix as a uniform to the object's shader file
 		camera.MatrixUniform(shaderProgram, "camMatrix");

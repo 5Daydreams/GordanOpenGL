@@ -178,6 +178,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Ghost_Alvin_512.png" />
+    <Image Include="PebblesTile.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
