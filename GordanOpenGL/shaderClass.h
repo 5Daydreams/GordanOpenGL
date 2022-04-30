@@ -8,6 +8,8 @@
 #include <iostream>
 #include <cerrno>
 
+#include "GLMacros.h"
+
 std::string get_file_contents(const char* filename);
 
 class Shader

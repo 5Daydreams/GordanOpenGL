@@ -25,7 +25,7 @@ void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
 void Camera::MatrixUniform(Shader& shader, const char* uniform)
 {
 	// Exports camera matrix
-	glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix));
+	GLCall(glUniformMatrix4fv(glGetUniformLocation(shader.ID, uniform), 1, GL_FALSE, glm::value_ptr(cameraMatrix)));
 }
 
 void Camera::Inputs(GLFWwindow* window)

@@ -171,7 +171,7 @@ int main()
 	gladLoadGL();
 
 	// viewport size, as in, where we want to render at
-	glViewport(0, 0, width, height);
+	GLCall(glViewport(0, 0, width, height));
 
 	// Generates Shader object using defualt.vert and default.frag shaders
 	Shader shaderProgram("default.vert", "default.frag");
@@ -229,12 +229,12 @@ int main()
 
 
 	lightShader.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix));
-	glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
+	GLCall(glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix)));
+	GLCall(glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w));
 	shaderProgram.Activate();
-	glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModelMatrix));
-	glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w);
-	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+	GLCall(glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModelMatrix)));
+	GLCall(glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w));
+	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z));
 
 
 	Texture texture("PebblesTile.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
@@ -242,19 +242,20 @@ int main()
 	Texture specular("PebblesTileSpecular.png", GL_TEXTURE_2D, 1, GL_RGBA, GL_UNSIGNED_BYTE);
 	specular.texUnit(shaderProgram, "tex1", 1);
 
-	glEnable(GL_DEPTH_TEST);
+	GLCall(glEnable(GL_DEPTH_TEST));
 
 	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
 	while (!glfwWindowShouldClose(window))
 	{
-		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		GLCall(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
+		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
-		lightPos.x = sin(glfwGetTime());
-		lightPos.z = cos(glfwGetTime());
+		lightShader.Activate();
+		lightPos.x = (float) sin(glfwGetTime());
+		lightPos.z = (float) cos(glfwGetTime());
 		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightPos);
-		glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix));
+		GLCall(glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix)));
 
 		// camera events
 		camera.Inputs(window);
@@ -264,8 +265,8 @@ int main()
 		shaderProgram.Activate();
 
 		// Passing the camera position vector as a uniform to the object's shader file
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
-		glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z);
+		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z));
+		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z));
 		// Passing the camera model * projection matrix as a uniform to the object's shader file
 		camera.MatrixUniform(shaderProgram, "camMatrix");
 
@@ -274,7 +275,7 @@ int main()
 		VAO1.Bind();
 
 		const int indexCount = sizeof(indicesPyramidLighting) / sizeof(int);
-		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0);
+		GLCall(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 
 		// setup for rendering the light cube
 		lightShader.Activate();
@@ -282,7 +283,7 @@ int main()
 		lightVAO.Bind();
 
 		const int indexCountLight = sizeof(lightIndices) / sizeof(int);
-		glDrawElements(GL_TRIANGLES, indexCountLight, GL_UNSIGNED_INT, 0);
+		GLCall(glDrawElements(GL_TRIANGLES, indexCountLight, GL_UNSIGNED_INT, 0));
 
 		// Swap render buffers
 		glfwSwapBuffers(window);
@@ -298,7 +299,7 @@ int main()
 	EBO1.Delete();
 	texture.Delete();
 	shaderProgram.Delete();
-	
+
 	lightVAO.Delete();
 	lightVBO.Delete();
 	lightEBO.Delete();
