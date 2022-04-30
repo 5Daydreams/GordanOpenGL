@@ -12,12 +12,12 @@
 // By using \ you can ignore the \n character, such that the define statement has a more-than-one-line scope
 
 
-inline void GLClearError()
+static void GLClearError()
 {
 	while (glGetError() != GL_NO_ERROR);
 }
 
-inline bool GLLogCall(const char* function, const char* file, int line)
+static bool GLLogCall(const char* function, const char* file, int line)
 {
 	while (GLenum error = glGetError())
 	{
