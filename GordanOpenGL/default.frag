@@ -12,6 +12,8 @@ in vec3 crntPos;
 // uniforms represent the _same value_ for all fragments within a shader instace, 
 // hard-push to use "uniform" instead of "varying" variables, as those can take up significantly more time to process
 uniform sampler2D tex0;
+uniform sampler2D tex1;
+
 uniform vec4 lightColor;
 uniform vec3 lightPos;
 uniform vec3 camPos;
@@ -30,12 +32,12 @@ void main()
 	vec3 viewDirection = normalize(camPos - crntPos);
 	vec3 reflectionDirection = reflect(-lightDirection, normal);
 	float specularGradient = max(dot(viewDirection, reflectionDirection), 0.0f);
-	float specAmount = pow(specularGradient, 8);
-	
-	float specularLight = 0.50f;
+	float specAmount = pow(specularGradient, 16);
+
+	float specularLight = texture(tex1, texCoord).r;	
 	float specular = specAmount * specularLight;
 
 	// outputs final color
 	vec4 texColor = texture(tex0, texCoord);
-	FragColor = texColor * lightColor * (diffuse + ambient + specular);
+	FragColor = (texColor * (diffuse + ambient) + specular ) * lightColor;
 }

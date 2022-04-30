@@ -136,6 +136,13 @@ GLuint lightIndices[] =
 int width = 800;
 int height = 600;
 
+void ExitOnEsc(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+}
+
+
 int main()
 {
 	glfwInit();
@@ -230,8 +237,10 @@ int main()
 	glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 
 
-	Texture texture("PebblesTile.png", GL_TEXTURE_2D, GL_TEXTURE0, GL_RGBA, GL_UNSIGNED_BYTE);
+	Texture texture("PebblesTile.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
 	texture.texUnit(shaderProgram, "tex0", 0);
+	Texture specular("PebblesTileSpecular.png", GL_TEXTURE_2D, 1, GL_RGBA, GL_UNSIGNED_BYTE);
+	specular.texUnit(shaderProgram, "tex1", 1);
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -243,6 +252,7 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		lightPos.x = sin(glfwGetTime());
+		lightPos.z = cos(glfwGetTime());
 		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightPos);
 		glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix));
 
@@ -260,6 +270,7 @@ int main()
 		camera.MatrixUniform(shaderProgram, "camMatrix");
 
 		texture.Bind();
+		specular.Bind();
 		VAO1.Bind();
 
 		const int indexCount = sizeof(indicesPyramidLighting) / sizeof(int);
@@ -277,6 +288,8 @@ int main()
 		glfwSwapBuffers(window);
 		// handle window events
 		glfwPollEvents();
+
+		ExitOnEsc(window);
 	}
 
 	// Deleting the abstracted GPU objects
@@ -285,6 +298,7 @@ int main()
 	EBO1.Delete();
 	texture.Delete();
 	shaderProgram.Delete();
+	
 	lightVAO.Delete();
 	lightVBO.Delete();
 	lightEBO.Delete();
