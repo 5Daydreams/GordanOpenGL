@@ -133,15 +133,14 @@ GLuint lightIndices[] =
 
 #pragma endregion
 
-int width = 512;
-int height = 512;
+int width = 800;
+int height = 600;
 
 void ExitOnEsc(GLFWwindow* window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
 }
-
 
 int main()
 {
@@ -265,7 +264,7 @@ int main()
 
 	GLCall(glEnable(GL_DEPTH_TEST));
 
-	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 0.0f));
+	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -296,7 +295,7 @@ int main()
 		VAO1.Bind();
 
 		const int indexCount = sizeof(indicesPyramidLighting) / sizeof(int);
-		//GLCall(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
+		GLCall(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 
 		// setup for rendering the light cube
 		lightShader.Activate();
@@ -310,7 +309,7 @@ int main()
 		camera.MatrixUniform(quadShader, "camMatrix");
 		VAO2.Bind();
 		const int indexCountQuad = sizeof(indicesQuad) / sizeof(int);
-		GLCall(glDrawElements(GL_TRIANGLES, indexCountQuad , GL_UNSIGNED_INT, 0));
+		// GLCall(glDrawElements(GL_TRIANGLES, indexCountQuad , GL_UNSIGNED_INT, 0));
 
 		// Swap render buffers
 		glfwSwapBuffers(window);

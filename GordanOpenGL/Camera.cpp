@@ -22,7 +22,7 @@ void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
 	glm::mat4 ortho = glm::ortho(-1.0f,1.0f,-1.0f,1.0f);
 
 	// Sets new camera matrix
-	cameraMatrix = ortho * view;
+	cameraMatrix = projection * view;
 }
 
 void Camera::MatrixUniform(Shader& shader, const char* uniform)
