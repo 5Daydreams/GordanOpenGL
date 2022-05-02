@@ -166,6 +166,8 @@
     <None Include="default.vert" />
     <None Include="light.frag" />
     <None Include="light.vert" />
+    <None Include="quadUV.frag" />
+    <None Include="quadUV.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EBO.h" />

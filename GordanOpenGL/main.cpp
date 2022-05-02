@@ -26,11 +26,11 @@ GLfloat verticesTri[] =
 };
 
 GLfloat verticesQuad[] =
-{ //    COORDS                /       COLORS       /    UV_COORDS    //
-	-0.5f,-0.5f, 0.0f,         0.80f, 0.30f, 0.02f,	    0.0f, 0.0f,
-	+0.5f,-0.5f, 0.0f,         0.80f, 0.30f, 0.02f,	    1.0f, 0.0f,
-	+0.5f,+0.5f, 0.0f,         1.00f, 0.60f, 0.32f,	    1.0f, 1.0f,
-	-0.5f,+0.5f, 0.0f,         0.00f, 0.45f, 0.77f,     0.0f, 1.0f
+{ //     COORDS       /     UV_COORDS    //
+	-1.0f, -1.0f, 0.0f,     0.0f, 0.0f,
+	+1.0f, -1.0f, 0.0f,     1.0f, 0.0f,
+	+1.0f, +1.0f, 0.0f,     1.0f, 1.0f,
+	-1.0f, +1.0f, 0.0f,     0.0f, 1.0f
 };
 
 GLfloat verticesPyramid[] =
@@ -133,8 +133,8 @@ GLuint lightIndices[] =
 
 #pragma endregion
 
-int width = 800;
-int height = 600;
+int width = 512;
+int height = 512;
 
 void ExitOnEsc(GLFWwindow* window)
 {
@@ -152,9 +152,8 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	// create a window
+	// create a window - notice the distinction between Window and Monitor - 
 	GLFWmonitor* fullscreen = NULL;
-
 	GLFWwindow* window = glfwCreateWindow(width, height, "I am a window, my name is Doorothy", fullscreen, NULL);
 
 	if (window == NULL)
@@ -168,7 +167,11 @@ int main()
 	glfwMakeContextCurrent(window);
 
 	// glad loads the openGL functions
-	gladLoadGL();
+    if (!gladLoadGL()) 
+	{
+        std::cout << "Failed to initialize OpenGL context" << std::endl;
+        return -1;
+    }
 
 	// viewport size, as in, where we want to render at
 	GLCall(glViewport(0, 0, width, height));
@@ -199,6 +202,21 @@ int main()
 	VBO1.Unbind();
 	EBO1.Unbind();
 
+	Shader quadShader("quadUV.vert", "quadUV.frag");
+
+	VAO VAO2;
+	VAO2.Bind();
+
+	VBO VBO2(verticesQuad, sizeof(verticesQuad));
+	EBO EBO2(indicesQuad, sizeof(indicesQuad));
+
+	VAO2.LinkAttrib(VBO2, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*)0);
+	VAO2.LinkAttrib(VBO2, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	VAO2.Unbind();
+	VBO2.Unbind();
+	EBO2.Unbind();
+
 	// The shader for the light cube
 	Shader lightShader("light.vert", "light.frag");
 
@@ -223,28 +241,31 @@ int main()
 	glm::mat4 lightModelMatrix = glm::mat4(1.0f);
 	lightModelMatrix = glm::translate(lightModelMatrix, lightPos);
 
-	glm::vec3 pyramidPos = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::mat4 pyramidModelMatrix = glm::mat4(1.0f);
-	pyramidModelMatrix = glm::translate(pyramidModelMatrix, pyramidPos);
+	glm::vec3 mainObjectPos = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::mat4 mainObjectMatrix = glm::mat4(1.0f);
+	mainObjectMatrix = glm::translate(mainObjectMatrix, mainObjectPos);
 
 
 	lightShader.Activate();
 	GLCall(glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix)));
 	GLCall(glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w));
+
 	shaderProgram.Activate();
-	GLCall(glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(pyramidModelMatrix)));
+	GLCall(glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(mainObjectMatrix)));
 	GLCall(glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w));
 	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z));
-
-
+	
 	Texture texture("PebblesTile.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
 	texture.texUnit(shaderProgram, "tex0", 0);
 	Texture specular("PebblesTileSpecular.png", GL_TEXTURE_2D, 1, GL_RGBA, GL_UNSIGNED_BYTE);
 	specular.texUnit(shaderProgram, "tex1", 1);
 
+	quadShader.Activate();
+	GLCall(glUniformMatrix4fv(glGetUniformLocation(quadShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(mainObjectMatrix)));
+
 	GLCall(glEnable(GL_DEPTH_TEST));
 
-	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 0.0f));
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -275,7 +296,7 @@ int main()
 		VAO1.Bind();
 
 		const int indexCount = sizeof(indicesPyramidLighting) / sizeof(int);
-		GLCall(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
+		//GLCall(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 
 		// setup for rendering the light cube
 		lightShader.Activate();
@@ -284,6 +305,12 @@ int main()
 
 		const int indexCountLight = sizeof(lightIndices) / sizeof(int);
 		GLCall(glDrawElements(GL_TRIANGLES, indexCountLight, GL_UNSIGNED_INT, 0));
+
+		quadShader.Activate();
+		camera.MatrixUniform(quadShader, "camMatrix");
+		VAO2.Bind();
+		const int indexCountQuad = sizeof(indicesQuad) / sizeof(int);
+		GLCall(glDrawElements(GL_TRIANGLES, indexCountQuad , GL_UNSIGNED_INT, 0));
 
 		// Swap render buffers
 		glfwSwapBuffers(window);
@@ -304,6 +331,11 @@ int main()
 	lightVBO.Delete();
 	lightEBO.Delete();
 	lightShader.Delete();
+
+	VAO2.Delete();
+	VBO2.Delete();
+	EBO2.Delete();
+	quadShader.Delete();
 
 	// cleaning up window reference and then glfw context (IN THAT ORDER!!)
 	glfwDestroyWindow(window);
