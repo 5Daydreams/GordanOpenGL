@@ -22,16 +22,19 @@ struct Material {
 }; 
 
 struct Light {
-    vec3 position;  
+    vec3 position;
+    vec3 spotDirection;
+    float innerCutoff;
+    float outerCutoff;
   
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
-	
-	// Point Lights require linear falloff and quadratic falloff values 
-    float linearFalloff;
+
+	float linearFalloff;
     float quadraticFalloff;
-}; 
+
+};
 
 uniform Material material;
 uniform Light light;  
@@ -39,32 +42,39 @@ uniform vec3 camPos;
 
 void main()
 {
-	vec3 ambient = material.ambient;
-
+	// diffuse lighting
 	vec3 normal = normalize(Normal);
 	vec3 lightDirection = normalize(light.position - FragPos);
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
 
+	// specular lighting
 	vec3 viewDirection = normalize(camPos - FragPos);
 	vec3 reflectionDirection = reflect(-lightDirection, normal);
 	float specularGradient = max(dot(viewDirection, reflectionDirection), 0.0f);
 	float specAmount = pow(specularGradient, material.shininess);
 
-	float specularMap = texture(tex1, texCoord).r;
-	float specular = specAmount * specularMap;
+	float specularLight = texture(tex1, texCoord).r; // Specular map
+	float specular = specAmount * specularLight;
 
-	// outputs final color
-	vec4 texColor = texture(tex0, texCoord);
+	// spotlight effect
+    float theta = dot(lightDirection, normalize(-light.spotDirection)); 
+    float epsilon = (light.innerCutoff - light.outerCutoff);
+    float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+    
+	diffuse  *= intensity;
+    specular *= intensity;
 
 	// attenuation - the keyword "distance" is already taken by glsl
     float dist = length(light.position - FragPos);
     float attenuation = 1.0 / (1.0f + light.linearFalloff * dist + light.quadraticFalloff * (dist * dist));    
 
+	vec4 texColor = texture(tex0, texCoord);
+
 	// ambient light is assumed to be full white always
-	vec3 ambientColor =  light.ambient * material.ambient * texColor.xyz; 
-	vec3 diffuseColor =  light.diffuse * diffuse * material.diffuse * texColor.xyz;
+	vec3 ambientColor  = light.ambient * material.ambient * texColor.xyz; 
+	vec3 diffuseColor  = light.diffuse * diffuse * material.diffuse * texColor.xyz;
 	vec3 specularColor = light.specular * specular * material.specular;
 
-	vec3 result=(ambientColor + diffuseColor + specularColor) * attenuation;
+	vec3 result = (ambientColor + diffuseColor + specularColor) * attenuation;
 	FragColor = vec4(result,1.0f);
 }

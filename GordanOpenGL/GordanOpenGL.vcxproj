@@ -170,6 +170,7 @@
     <None Include="pointLight.frag" />
     <None Include="quadUV.frag" />
     <None Include="quadUV.vert" />
+    <None Include="spotlight.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EBO.h" />

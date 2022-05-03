@@ -184,7 +184,7 @@ int main()
 #pragma region mainObject shader and VAO
 
 	// Generates Shader object using defualt.vert and default.frag shaders
-	Shader shaderProgram("default.vert", "pointLight.frag");
+	Shader shaderProgram("default.vert", "spotlight.frag");
 
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
@@ -258,7 +258,7 @@ int main()
 	glm::vec3 lightAmbient = glm::vec3(0.2f, 0.2f, 0.2f);
 	glm::vec3 lightColor = lightDiffuse;
 
-	glm::vec3 lightPos = glm::vec3(0.5f, 1.5f, 0.5f);
+	glm::vec3 lightPos = glm::vec3(1.0f, 0.5f, 1.0f);
 	glm::mat4 lightModelMatrix = glm::mat4(1.0f);
 	lightModelMatrix = glm::translate(lightModelMatrix, lightPos);
 
@@ -269,13 +269,14 @@ int main()
 	// Passing values to the MainObject shader
 	glm::vec3 mainObjectPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 mainObjectMatrix = glm::mat4(1.0f);
+	mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(1.0f,1.0f,1.0f));
 	mainObjectMatrix = glm::translate(mainObjectMatrix, mainObjectPos);
 
 	shaderProgram.Activate();
 	GLCall(glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(mainObjectMatrix)));
 
-	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "material.ambient"), 1.0f, 0.5f, 0.31f));
-	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "material.diffuse"), 1.0f, 0.5f, 0.31f));
+	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "material.ambient"), 0.45f, 0.6f, 0.9f));
+	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "material.diffuse"), 0.45f, 0.6f, 0.9f));
 	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "material.specular"), 0.5f, 0.5f, 0.5f));
 	GLCall(glUniform1f(glGetUniformLocation(shaderProgram.ID, "material.shininess"), 32.0f));
 
@@ -285,11 +286,26 @@ int main()
 		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.direction"), lightDir.x, lightDir.y, lightDir.z));
 	}
 
-	if (true) // set to true for point lighting setup
+	if (false) // set to true for point lighting setup
 	{
 		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.position"), lightPos.x, lightPos.y, lightPos.z));
-		GLCall(glUniform1f(glGetUniformLocation(shaderProgram.ID, "light.linear"), 0.09f));
-		GLCall(glUniform1f(glGetUniformLocation(shaderProgram.ID, "light.quadratic"), 0.032f));
+		GLCall(glUniform1f(glGetUniformLocation(shaderProgram.ID, "light.linearFalloff"), 0.09f));
+		GLCall(glUniform1f(glGetUniformLocation(shaderProgram.ID, "light.quadraticFalloff"), 0.032f));
+	}
+
+	if (true) // set to true for spotlight setup
+	{
+		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.position"), lightPos.x, lightPos.y, lightPos.z));
+		glm::vec3 spotlightDir = glm::vec3(- 1.0f, 0.0f, -1.0f);
+		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.spotDirection"), spotlightDir.x, spotlightDir.y, spotlightDir.z));
+
+		GLfloat innerCutoffValue = glm::cos(glm::radians(1.0f));
+		GLfloat outerCutoffValue = glm::cos(glm::radians(20.0f));
+		GLCall(glUniform1f(glGetUniformLocation(shaderProgram.ID, "light.innerCutoff"), innerCutoffValue));
+		GLCall(glUniform1f(glGetUniformLocation(shaderProgram.ID, "light.outerCutoff"), outerCutoffValue));
+		
+		GLCall(glUniform1f(glGetUniformLocation(shaderProgram.ID, "light.linearFalloff"), 0.03f));
+		GLCall(glUniform1f(glGetUniformLocation(shaderProgram.ID, "light.quadraticFalloff"), 0.05f));
 	}
 
 	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.ambient"), lightAmbient.x, lightAmbient.y, lightAmbient.z));
@@ -314,8 +330,8 @@ int main()
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		lightShader.Activate();
-		lightPos.x = (float)sin(glfwGetTime());
-		lightPos.z = (float)cos(glfwGetTime());
+		//lightPos.x = (float)sin(glfwGetTime());
+		//lightPos.z = (float)cos(glfwGetTime());
 		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightPos);
 		GLCall(glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix)));
 
