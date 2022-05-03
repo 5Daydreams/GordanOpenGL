@@ -38,7 +38,7 @@ void main()
 	// ambient lighting
 	vec3 ambient = material.ambient;
 
-	// diffuse lighting
+	// diffuse lighting ->>>>>>>>>>>>>>> working for directional only!!
 	vec3 normal = normalize(Normal);
 	vec3 lightDirection = normalize(-light.direction);
 	float diffuse = max(dot(normal, lightDirection), 0.0f);

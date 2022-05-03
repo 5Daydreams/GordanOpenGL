@@ -167,6 +167,7 @@
     <None Include="directionalLight.frag" />
     <None Include="light.frag" />
     <None Include="light.vert" />
+    <None Include="multiLight.frag" />
     <None Include="pointLight.frag" />
     <None Include="quadUV.frag" />
     <None Include="quadUV.vert" />

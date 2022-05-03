@@ -80,3 +80,74 @@ void Shader::compileErrors(unsigned int shader, const char* type)
 		}
 	}
 }
+
+void Shader::setBool(const std::string& name, bool value) const
+{
+    GLCall(glUniform1i(GetUniformLocation(name.c_str()), (int)value));
+}
+
+void Shader::setInt(const std::string& name, int value) const
+{
+    GLCall(glUniform1i(GetUniformLocation(name.c_str()), value));
+}
+
+void Shader::setFloat(const std::string& name, float value) const
+{
+    GLCall(glUniform1f(GetUniformLocation(name.c_str()), value));
+}
+
+void Shader::setVec2(const std::string& name, const glm::vec2& value) const
+{
+    GLCall(glUniform2fv(GetUniformLocation(name.c_str()), 1, &value[0]));
+}
+
+void Shader::setVec2(const std::string& name, float x, float y) const
+{
+    GLCall(glUniform2f(GetUniformLocation(name.c_str()), x, y));
+}
+
+void Shader::setVec3(const std::string& name, const glm::vec3& value) const
+{
+    GLCall(glUniform3fv(GetUniformLocation(name.c_str()), 1, &value[0]));
+}
+
+void Shader::setVec3(const std::string& name, float x, float y, float z) const
+{
+    GLCall(glUniform3f(GetUniformLocation(name.c_str()), x, y, z));
+}
+
+void Shader::setVec4(const std::string& name, const glm::vec4& value) const
+{
+    GLCall(glUniform4fv(GetUniformLocation(name.c_str()), 1, &value[0]));
+}
+
+void Shader::setVec4(const std::string& name, float x, float y, float z, float w)
+{
+    GLCall(glUniform4f(GetUniformLocation(name.c_str()), x, y, z, w));
+}
+
+void Shader::setMat2(const std::string& name, const glm::mat2& mat) const
+{
+    GLCall(glUniformMatrix2fv(GetUniformLocation(name.c_str()), 1, GL_FALSE, &mat[0][0]));
+}
+
+void Shader::setMat3(const std::string& name, const glm::mat3& mat) const
+{
+    GLCall(glUniformMatrix3fv(GetUniformLocation(name.c_str()), 1, GL_FALSE, &mat[0][0]));
+}
+
+void Shader::setMat4(const std::string& name, const glm::mat4& mat) const
+{
+	GLCall(glUniformMatrix4fv(GetUniformLocation(name.c_str()), 1, GL_FALSE, &mat[0][0]));
+}
+
+GLint Shader::GetUniformLocation(const std::string& name) const
+{
+	GLCall(GLint location = glGetUniformLocation(ID, name.c_str()) );
+	if (location == -1)
+	{
+		std::cout << "Warning: uniform '" << name << "' doesn't exist!" << std::endl;
+	}
+
+	return location;
+}
