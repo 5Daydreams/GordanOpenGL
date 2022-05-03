@@ -43,27 +43,27 @@ GLfloat verticesPyramid[] =
 };
 
 GLfloat verticesPyramidLighting[] =
-{ //     COORDINATES     /        COLORS          /    TexCoord   /        NORMALS       //
-	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 2.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 2.0f, 2.0f,      0.0f, -1.0f, 0.0f, // Bottom side
-	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 2.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+{ //     COORDINATES    /    TexCoord    /        NORMALS       //
+	-0.5f, 0.0f,  0.5f,     0.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+	-0.5f, 0.0f, -0.5f,     0.0f, 2.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+	 0.5f, 0.0f, -0.5f,     2.0f, 2.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+	 0.5f, 0.0f,  0.5f,     2.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
 
-	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 2.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 1.0f, 2.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+	-0.5f, 0.0f,  0.5f,     0.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+	-0.5f, 0.0f, -0.5f,     2.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+	 0.0f, 0.8f,  0.0f,     1.0f, 2.0f,     -0.8f, 0.5f,  0.0f, // Left Side
 
-	-0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 2.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 1.0f, 2.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+	-0.5f, 0.0f, -0.5f,     2.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+	 0.5f, 0.0f, -0.5f,     0.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+	 0.0f, 0.8f,  0.0f,     1.0f, 2.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
 
-	 0.5f, 0.0f, -0.5f,     0.83f, 0.70f, 0.44f,	 0.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 2.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 1.0f, 2.0f,      0.8f, 0.5f,  0.0f, // Right side
+	 0.5f, 0.0f, -0.5f,     0.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
+	 0.5f, 0.0f,  0.5f,     2.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
+	 0.0f, 0.8f,  0.0f,     1.0f, 2.0f,      0.8f, 0.5f,  0.0f, // Right side
 
-	 0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f,	 2.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
-	-0.5f, 0.0f,  0.5f,     0.83f, 0.70f, 0.44f, 	 0.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
-	 0.0f, 0.8f,  0.0f,     0.92f, 0.86f, 0.76f,	 1.0f, 2.0f,      0.0f, 0.5f,  0.8f  // Facing side
+	 0.5f, 0.0f,  0.5f,     2.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
+	-0.5f, 0.0f,  0.5f,     0.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
+	 0.0f, 0.8f,  0.0f,     1.0f, 2.0f,      0.0f, 0.5f,  0.8f  // Facing side
 };
 
 GLuint indicesTri[]
@@ -144,6 +144,8 @@ void ExitOnEsc(GLFWwindow* window)
 
 int main()
 {
+#pragma region window setup
+
 	glfwInit();
 
 	// window hints, information necessary to create wwindow
@@ -174,9 +176,15 @@ int main()
 
 	// viewport size, as in, where we want to render at
 	GLCall(glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
+	
+	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.5f, 2.0f));
+
+#pragma endregion
+
+#pragma region mainObject shader and VAO
 
 	// Generates Shader object using defualt.vert and default.frag shaders
-	Shader shaderProgram("default.vert", "default.frag");
+	Shader shaderProgram("default.vert", "pointLight.frag");
 
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
@@ -188,10 +196,9 @@ int main()
 	EBO EBO1(indicesPyramidLighting, sizeof(indicesPyramidLighting));
 
 	// Links VBO attributes such as coordinates and colors to VAO
-	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 11 * sizeof(float), (void*)0);
-	VAO1.LinkAttrib(VBO1, 1, 3, GL_FLOAT, 11 * sizeof(float), (void*)(3 * sizeof(float)));
-	VAO1.LinkAttrib(VBO1, 2, 2, GL_FLOAT, 11 * sizeof(float), (void*)(6 * sizeof(float)));
-	VAO1.LinkAttrib(VBO1, 3, 3, GL_FLOAT, 11 * sizeof(float), (void*)(8 * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+	VAO1.LinkAttrib(VBO1, 1, 2, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 2, 3, GL_FLOAT, 8 * sizeof(float), (void*)(5 * sizeof(float)));
 
 	// (!) As of right now in the code, its safe to assume that the VBO's are highly packed and not particularly modularized, 
 	// or at least there should be a better way to structure their data 
@@ -200,6 +207,10 @@ int main()
 	VAO1.Unbind();
 	VBO1.Unbind();
 	EBO1.Unbind();
+
+#pragma endregion
+
+#pragma region quad shader and VAO
 
 	Shader quadShader("quadUV.vert", "quadUV.frag");
 
@@ -215,6 +226,10 @@ int main()
 	VAO2.Unbind();
 	VBO2.Unbind();
 	EBO2.Unbind();
+
+#pragma endregion
+
+#pragma region lightCube shader and VAO
 
 	// The shader for the light cube
 	Shader lightShader("light.vert", "light.frag");
@@ -234,6 +249,8 @@ int main()
 	lightVAO.Unbind();
 	lightVBO.Unbind();
 	lightEBO.Unbind();
+
+#pragma endregion
 
 	// Preparing Light Coloring
 	glm::vec3 lightSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -262,8 +279,19 @@ int main()
 	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "material.specular"), 0.5f, 0.5f, 0.5f));
 	GLCall(glUniform1f(glGetUniformLocation(shaderProgram.ID, "material.shininess"), 32.0f));
 
-	glm::vec3 lightDir = glm::vec3(0.3f, -1.0f, 0.3f);
-	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.direction"), lightDir.x, lightDir.y, lightDir.z));
+	if (false) // set to true for directional lighting setup
+	{
+		glm::vec3 lightDir = glm::vec3(0.3f, -1.0f, 0.3f);
+		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.direction"), lightDir.x, lightDir.y, lightDir.z));
+	}
+
+	if (true) // set to true for point lighting setup
+	{
+		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.position"), lightPos.x, lightPos.y, lightPos.z));
+		GLCall(glUniform1f(glGetUniformLocation(shaderProgram.ID, "light.linear"), 0.09f));
+		GLCall(glUniform1f(glGetUniformLocation(shaderProgram.ID, "light.quadratic"), 0.032f));
+	}
+
 	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.ambient"), lightAmbient.x, lightAmbient.y, lightAmbient.z));
 	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.diffuse"), lightDiffuse.x, lightDiffuse.y, lightDiffuse.z));
 	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.specular"), lightSpecular.x, lightSpecular.y, lightSpecular.z));
@@ -279,7 +307,6 @@ int main()
 
 	GLCall(glEnable(GL_DEPTH_TEST));
 
-	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.5f, 2.0f));
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -351,7 +378,7 @@ int main()
 	EBO2.Delete();
 	quadShader.Delete();
 
-	// cleaning up window reference and then glfw context (IN THAT ORDER!!)
+	// cleaning up window reference and then glfw context (!! IN THAT ORDER !!)
 	glfwDestroyWindow(window);
 	glfwTerminate();
 

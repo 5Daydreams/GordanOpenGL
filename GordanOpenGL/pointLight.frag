@@ -4,9 +4,9 @@
 out vec4 FragColor;
 
 // the "in" keyword means these values are taken from the vertex shader within this particular shader program
+in vec3 FragPos;
 in vec2 texCoord;
 in vec3 Normal;
-in vec3 crntPos;
 
 // uniforms represent the _same value_ for all fragments within a shader instace, 
 // hard-push to use "uniform" instead of "varying" variables, as those can take up significantly more time to process
@@ -17,17 +17,21 @@ struct Material {
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+
     float shininess;
 }; 
 
 struct Light {
-    // vec3 position;
-	vec3 direction;
+    vec3 position;  
   
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
-};
+	
+	// Point Lights require linear falloff and quadratic falloff values 
+    float linear;
+    float quadratic;
+}; 
 
 uniform Material material;
 uniform Light light;  
@@ -35,31 +39,32 @@ uniform vec3 camPos;
 
 void main()
 {
-	// ambient lighting
 	vec3 ambient = material.ambient;
 
-	// diffuse lighting
 	vec3 normal = normalize(Normal);
-	vec3 lightDirection = normalize(-light.direction);
+	vec3 lightDirection = normalize(light.position - FragPos);
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
 
-	// specular lighting
-	vec3 viewDirection = normalize(camPos - crntPos);
+	vec3 viewDirection = normalize(camPos - FragPos);
 	vec3 reflectionDirection = reflect(-lightDirection, normal);
 	float specularGradient = max(dot(viewDirection, reflectionDirection), 0.0f);
 	float specAmount = pow(specularGradient, material.shininess);
 
-	float specularLight = texture(tex1, texCoord).r;
-	float specular = specAmount * specularLight;
+	float specularMap = texture(tex1, texCoord).r;
+	float specular = specAmount * specularMap;
 
 	// outputs final color
 	vec4 texColor = texture(tex0, texCoord);
+
+	// attenuation - the keyword "distance" is already taken by glsl
+    float dist = length(light.position - FragPos);
+    float attenuation = 1.0 / (1.0f + light.linear * dist + light.quadratic * (dist * dist));    
 
 	// ambient light is assumed to be full white always
 	vec3 ambientColor =  light.ambient * material.ambient * texColor.xyz; 
 	vec3 diffuseColor =  light.diffuse * diffuse * material.diffuse * texColor.xyz;
 	vec3 specularColor = light.specular * specular * material.specular;
 
-	vec3 result=(ambientColor + diffuseColor + specularColor);
+	vec3 result=(ambientColor + diffuseColor + specularColor) * attenuation;
 	FragColor = vec4(result,1.0f);
 }

@@ -68,6 +68,12 @@
     <None Include="quadUV.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="directionalLight.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
+    <None Include="pointLight.frag">
+      <Filter>Resource Files\Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shaderClass.h">

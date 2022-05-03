@@ -164,8 +164,10 @@
   <ItemGroup>
     <None Include="default.frag" />
     <None Include="default.vert" />
+    <None Include="directionalLight.frag" />
     <None Include="light.frag" />
     <None Include="light.vert" />
+    <None Include="pointLight.frag" />
     <None Include="quadUV.frag" />
     <None Include="quadUV.vert" />
   </ItemGroup>
