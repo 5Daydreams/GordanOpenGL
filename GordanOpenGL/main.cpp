@@ -133,8 +133,8 @@ GLuint lightIndices[] =
 
 #pragma endregion
 
-int width = 800;
-int height = 600;
+const unsigned int SCREEN_WIDTH = 800;
+const unsigned int SCREEN_HEIGHT = 600;
 
 void ExitOnEsc(GLFWwindow* window)
 {
@@ -153,7 +153,7 @@ int main()
 
 	// create a window - notice the distinction between Window and Monitor - 
 	GLFWmonitor* fullscreen = NULL;
-	GLFWwindow* window = glfwCreateWindow(width, height, "I am a window, my name is Doorothy", fullscreen, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "I am a window, my name is Doorothy", fullscreen, NULL);
 
 	if (window == NULL)
 	{
@@ -166,14 +166,14 @@ int main()
 	glfwMakeContextCurrent(window);
 
 	// glad loads the openGL functions
-    if (!gladLoadGL()) 
+	if (!gladLoadGL())
 	{
-        std::cout << "Failed to initialize OpenGL context" << std::endl;
-        return -1;
-    }
+		std::cout << "Failed to initialize OpenGL context" << std::endl;
+		return -1;
+	}
 
 	// viewport size, as in, where we want to render at
-	GLCall(glViewport(0, 0, width, height));
+	GLCall(glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
 
 	// Generates Shader object using defualt.vert and default.frag shaders
 	Shader shaderProgram("default.vert", "default.frag");
@@ -235,25 +235,40 @@ int main()
 	lightVBO.Unbind();
 	lightEBO.Unbind();
 
-	glm::vec4 lightColor = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+	// Preparing Light Coloring
+	glm::vec3 lightSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
+	glm::vec3 lightDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+	glm::vec3 lightAmbient = glm::vec3(0.2f, 0.2f, 0.2f);
+	glm::vec3 lightColor = lightDiffuse;
+
 	glm::vec3 lightPos = glm::vec3(0.5f, 1.5f, 0.5f);
 	glm::mat4 lightModelMatrix = glm::mat4(1.0f);
 	lightModelMatrix = glm::translate(lightModelMatrix, lightPos);
 
+	lightShader.Activate();
+	GLCall(glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix)));
+	GLCall(glUniform3f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z));
+
+	// Passing values to the MainObject shader
 	glm::vec3 mainObjectPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 mainObjectMatrix = glm::mat4(1.0f);
 	mainObjectMatrix = glm::translate(mainObjectMatrix, mainObjectPos);
 
-
-	lightShader.Activate();
-	GLCall(glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix)));
-	GLCall(glUniform4f(glGetUniformLocation(lightShader.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w));
-
 	shaderProgram.Activate();
 	GLCall(glUniformMatrix4fv(glGetUniformLocation(shaderProgram.ID, "model"), 1, GL_FALSE, glm::value_ptr(mainObjectMatrix)));
-	GLCall(glUniform4f(glGetUniformLocation(shaderProgram.ID, "lightColor"), lightColor.x, lightColor.y, lightColor.z, lightColor.w));
-	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z));
-	
+
+	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "material.ambient"), 1.0f, 0.5f, 0.31f));
+	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "material.diffuse"), 1.0f, 0.5f, 0.31f));
+	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "material.specular"), 0.5f, 0.5f, 0.5f));
+	GLCall(glUniform1f(glGetUniformLocation(shaderProgram.ID, "material.shininess"), 32.0f));
+
+	glm::vec3 lightDir = glm::vec3(0.3f, -1.0f, 0.3f);
+	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.direction"), lightDir.x, lightDir.y, lightDir.z));
+	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.ambient"), lightAmbient.x, lightAmbient.y, lightAmbient.z));
+	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.diffuse"), lightDiffuse.x, lightDiffuse.y, lightDiffuse.z));
+	GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.specular"), lightSpecular.x, lightSpecular.y, lightSpecular.z));
+
+
 	Texture texture("PebblesTile.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
 	texture.texUnit(shaderProgram, "tex0", 0);
 	Texture specular("PebblesTileSpecular.png", GL_TEXTURE_2D, 1, GL_RGBA, GL_UNSIGNED_BYTE);
@@ -264,7 +279,7 @@ int main()
 
 	GLCall(glEnable(GL_DEPTH_TEST));
 
-	Camera camera(width, height, glm::vec3(0.0f, 0.0f, 2.0f));
+	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.5f, 2.0f));
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -272,8 +287,8 @@ int main()
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		lightShader.Activate();
-		lightPos.x = (float) sin(glfwGetTime());
-		lightPos.z = (float) cos(glfwGetTime());
+		lightPos.x = (float)sin(glfwGetTime());
+		lightPos.z = (float)cos(glfwGetTime());
 		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightPos);
 		GLCall(glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix)));
 
@@ -285,7 +300,7 @@ int main()
 		shaderProgram.Activate();
 
 		// Passing the camera position vector as a uniform to the object's shader file
-		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "lightPos"), lightPos.x, lightPos.y, lightPos.z));
+		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.position"), lightPos.x, lightPos.y, lightPos.z));
 		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z));
 		// Passing the camera model * projection matrix as a uniform to the object's shader file
 		camera.MatrixUniform(shaderProgram, "camMatrix");
