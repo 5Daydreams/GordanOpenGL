@@ -258,7 +258,7 @@ int main()
 	glm::vec3 lightAmbient = glm::vec3(0.2f, 0.2f, 0.2f);
 	glm::vec3 lightColor = lightDiffuse;
 
-	glm::vec3 lightPos = glm::vec3(1.0f, 0.5f, 1.0f);
+	glm::vec3 lightPos = glm::vec3(1.0f, 1.5f, 1.0f);
 	glm::mat4 lightModelMatrix = glm::mat4(1.0f);
 	lightModelMatrix = glm::translate(lightModelMatrix, lightPos);
 
@@ -285,18 +285,18 @@ int main()
 	if (false) // set to true for point lighting setup
 	{
 		shaderProgram.setVec3("light.position", lightPos);
-		shaderProgram.setFloat("light.linearFalloff", 0.09f);
+		shaderProgram.setFloat("light.linearFalloff", 0.01f);
 		shaderProgram.setFloat("light.quadraticFalloff", 0.032f);
 	}
 
 	if (true) // set to true for spotlight setup
 	{
 		shaderProgram.setVec3("spotlight.position", lightPos);
-		glm::vec3 spotlightDir = glm::vec3(- 1.0f, 0.0f, -1.0f);
+		glm::vec3 spotlightDir = glm::vec3(- 1.0f, -1.0f, -1.0f);
 		shaderProgram.setVec3("spotlight.spotDirection", spotlightDir);
 
-		GLfloat innerCutoffValue = glm::cos(glm::radians(1.0f));
-		GLfloat outerCutoffValue = glm::cos(glm::radians(20.0f));
+		GLfloat innerCutoffValue = glm::cos(glm::radians(8.0f));
+		GLfloat outerCutoffValue = glm::cos(glm::radians(12.0f));
 
 		shaderProgram.setFloat("spotlight.innerCutoff", innerCutoffValue);
 		shaderProgram.setFloat("spotlight.outerCutoff", outerCutoffValue);
@@ -326,8 +326,8 @@ int main()
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		lightShader.Activate();
-		//lightPos.x = (float)sin(glfwGetTime());
-		//lightPos.z = (float)cos(glfwGetTime());
+		lightPos.x = (float)sin(glfwGetTime());
+		lightPos.z = (float)cos(glfwGetTime());
 		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightPos);
 		GLCall(glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix)));
 
@@ -339,7 +339,9 @@ int main()
 		shaderProgram.Activate();
 
 		// Passing the camera position vector as a uniform to the object's shader file
-		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "light.position"), lightPos.x, lightPos.y, lightPos.z));
+		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "spotlight.position"), lightPos.x, lightPos.y, lightPos.z));
+		glm::vec3 spotlightDir = mainObjectPos - lightPos;
+		shaderProgram.setVec3("spotlight.spotDirection", spotlightDir);
 		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z));
 		// Passing the camera model * projection matrix as a uniform to the object's shader file
 		camera.MatrixUniform(shaderProgram, "camMatrix");
