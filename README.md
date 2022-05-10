@@ -1,2 +1,2 @@
-# GordanOpenGL
- openGL series by Victor Gordan on youtube
+# StudiesOpenGL
+ openGL studies for my rendering engine
