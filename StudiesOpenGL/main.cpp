@@ -134,7 +134,7 @@ GLuint lightIndices[] =
 #pragma endregion
 
 const unsigned int SCREEN_WIDTH = 800;
-const unsigned int SCREEN_HEIGHT = 600;
+const unsigned int SCREEN_HEIGHT = 800;
 
 void ExitOnEsc(GLFWwindow* window)
 {
@@ -177,7 +177,7 @@ int main()
 	// viewport size, as in, where we want to render at
 	GLCall(glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
 	
-	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.5f, 2.0f));
+	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.0f, 0.0f));
 
 #pragma endregion
 
@@ -351,7 +351,7 @@ int main()
 		VAO1.Bind();
 
 		const int indexCount = sizeof(indicesPyramidLighting) / sizeof(int);
-		GLCall(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
+		// GLCall(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 
 		// setup for rendering the light cube
 		lightShader.Activate();
@@ -359,13 +359,13 @@ int main()
 		lightVAO.Bind();
 
 		const int indexCountLight = sizeof(lightIndices) / sizeof(int);
-		GLCall(glDrawElements(GL_TRIANGLES, indexCountLight, GL_UNSIGNED_INT, 0));
+		// GLCall(glDrawElements(GL_TRIANGLES, indexCountLight, GL_UNSIGNED_INT, 0));
 
 		quadShader.Activate();
 		camera.MatrixUniform(quadShader, "camMatrix");
 		VAO2.Bind();
 		const int indexCountQuad = sizeof(indicesQuad) / sizeof(int);
-		// GLCall(glDrawElements(GL_TRIANGLES, indexCountQuad , GL_UNSIGNED_INT, 0));
+		GLCall(glDrawElements(GL_TRIANGLES, indexCountQuad , GL_UNSIGNED_INT, 0));
 
 		// Swap render buffers
 		glfwSwapBuffers(window);
