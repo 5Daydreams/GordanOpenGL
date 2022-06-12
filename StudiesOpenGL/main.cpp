@@ -144,7 +144,7 @@ void ExitOnEsc(GLFWwindow* window)
 
 int main()
 {
-#pragma region window setup
+#pragma region window and camera setup
 
 	glfwInit();
 
@@ -177,7 +177,7 @@ int main()
 	// viewport size, as in, where we want to render at
 	GLCall(glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
 	
-	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.0f, 0.0f));
+	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.3f, 3.0f));
 
 #pragma endregion
 
@@ -252,6 +252,8 @@ int main()
 
 #pragma endregion
 
+#pragma region light object setup
+
 	// Preparing Light Coloring
 	glm::vec3 lightSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::vec3 lightDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
@@ -266,6 +268,11 @@ int main()
 	lightShader.setMat4("model", lightModelMatrix);
 	lightShader.setVec3("lightColor", lightColor);
 	
+#pragma endregion
+
+
+#pragma region main object setup
+
 	// Passing values to the MainObject shader
 	glm::vec3 mainObjectPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 mainObjectMatrix = glm::mat4(1.0f);
@@ -305,6 +312,10 @@ int main()
 		shaderProgram.setFloat("spotlight.quadraticFalloff", 0.05f);
 	}
 
+#pragma endregion
+
+#pragma region shader setups
+
 	shaderProgram.setVec3("spotlight.ambient", lightAmbient);
 	shaderProgram.setVec3("spotlight.diffuse", lightDiffuse);
 	shaderProgram.setVec3("spotlight.specular", lightSpecular);
@@ -319,6 +330,7 @@ int main()
 
 	GLCall(glEnable(GL_DEPTH_TEST));
 
+#pragma endregion
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -351,7 +363,7 @@ int main()
 		VAO1.Bind();
 
 		const int indexCount = sizeof(indicesPyramidLighting) / sizeof(int);
-		// GLCall(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
+		GLCall(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 
 		// setup for rendering the light cube
 		lightShader.Activate();
@@ -359,13 +371,13 @@ int main()
 		lightVAO.Bind();
 
 		const int indexCountLight = sizeof(lightIndices) / sizeof(int);
-		// GLCall(glDrawElements(GL_TRIANGLES, indexCountLight, GL_UNSIGNED_INT, 0));
+		GLCall(glDrawElements(GL_TRIANGLES, indexCountLight, GL_UNSIGNED_INT, 0));
 
-		quadShader.Activate();
-		camera.MatrixUniform(quadShader, "camMatrix");
-		VAO2.Bind();
-		const int indexCountQuad = sizeof(indicesQuad) / sizeof(int);
-		GLCall(glDrawElements(GL_TRIANGLES, indexCountQuad , GL_UNSIGNED_INT, 0));
+		//quadShader.Activate();
+		//camera.MatrixUniform(quadShader, "camMatrix");
+		//VAO2.Bind();
+		//const int indexCountQuad = sizeof(indicesQuad) / sizeof(int);
+		//GLCall(glDrawElements(GL_TRIANGLES, indexCountQuad , GL_UNSIGNED_INT, 0));
 
 		// Swap render buffers
 		glfwSwapBuffers(window);
@@ -380,6 +392,7 @@ int main()
 	VBO1.Delete();
 	EBO1.Delete();
 	texture.Delete();
+	specular.Delete();
 	shaderProgram.Delete();
 
 	lightVAO.Delete();

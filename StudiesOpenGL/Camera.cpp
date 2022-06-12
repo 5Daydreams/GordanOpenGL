@@ -22,7 +22,7 @@ void Camera::updateMatrix(float FOVdeg, float nearPlane, float farPlane)
 	glm::mat4 ortho = glm::ortho(-1.0f,1.0f,-1.0f,1.0f);
 
 	// Sets new camera matrix
-	cameraMatrix = ortho * view;
+	cameraMatrix = projection * view;
 }
 
 void Camera::MatrixUniform(Shader& shader, const char* uniform)
@@ -60,11 +60,11 @@ void Camera::Inputs(GLFWwindow* window)
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 	{
-		speed = 0.4f;
+		speed = 0.2f;
 	}
 	else if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_RELEASE)
 	{
-		speed = 0.1f;
+		speed = 0.07f;
 	}
 
 	if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS)
