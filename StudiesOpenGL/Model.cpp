@@ -43,26 +43,26 @@ void Model::processNode(aiNode* node, const aiScene* scene)
     }
 }
 
-Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
-{
-    vector<Vertex> vertices;
-    vector<unsigned int> indices;
-    vector<Texture> textures;
-
-    for (unsigned int i = 0; i < mesh->mNumVertices; i++)
-    {
-        Vertex vertex;
-        // process vertex positions, normals and texture coordinates
-        [...]
-        vertices.push_back(vertex);
-    }
-    // process indices
-    [...]
-    // process material
-    if (mesh->mMaterialIndex >= 0)
-    {
-        [...]
-    }
-
-    return Mesh(vertices, indices, textures);
-}
+//Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
+//{
+//    std::vector<Vertex> vertices;
+//    std::vector<unsigned int> indices;
+//    std::vector<Texture> textures;
+//
+//    for (unsigned int i = 0; i < mesh->mNumVertices; i++)
+//    {
+//        Vertex vertex;
+//        // process vertex positions, normals and texture coordinates
+//        [...]
+//        vertices.push_back(vertex);
+//    }
+//    // process indices
+//    [...]
+//    // process material
+//    if (mesh->mMaterialIndex >= 0)
+//    {
+//        [...]
+//    }
+//
+//    return Mesh(vertices, indices, textures);
+//}
