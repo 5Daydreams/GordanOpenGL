@@ -1,4 +1,5 @@
 #include <iostream>
+#include <filesystem>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb/stb_image.h>
@@ -12,6 +13,7 @@
 #include "VBO.h"
 #include "EBO.h"
 #include "Camera.h"
+#include "Model.h"
 
 #pragma region vertexMeshes
 
@@ -174,12 +176,20 @@ int main()
 		return -1;
 	}
 
+	// Fixed that stupid thing that Unreal does, where it flips textures upside down
+	stbi_set_flip_vertically_on_load(true);
+
 	// viewport size, as in, where we want to render at
 	GLCall(glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
-	
+
+	GLCall(glEnable(GL_DEPTH_TEST));
+
 	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.3f, 3.0f));
 
 #pragma endregion
+
+	std::string pathString = "Models/starship.fbx";
+	Model model(pathString);
 
 #pragma region mainObject shader and VAO
 
@@ -267,7 +277,7 @@ int main()
 	lightShader.Activate();
 	lightShader.setMat4("model", lightModelMatrix);
 	lightShader.setVec3("lightColor", lightColor);
-	
+
 #pragma endregion
 
 
@@ -276,7 +286,7 @@ int main()
 	// Passing values to the MainObject shader
 	glm::vec3 mainObjectPos = glm::vec3(0.0f, 0.0f, 0.0f);
 	glm::mat4 mainObjectMatrix = glm::mat4(1.0f);
-	mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(1.0f,1.0f,1.0f));
+	mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
 	mainObjectMatrix = glm::translate(mainObjectMatrix, mainObjectPos);
 
 	shaderProgram.Activate();
@@ -299,7 +309,7 @@ int main()
 	if (true) // set to true for spotlight setup
 	{
 		shaderProgram.setVec3("spotlight.position", lightPos);
-		glm::vec3 spotlightDir = glm::vec3(- 1.0f, -1.0f, -1.0f);
+		glm::vec3 spotlightDir = glm::vec3(-1.0f, -1.0f, -1.0f);
 		shaderProgram.setVec3("spotlight.spotDirection", spotlightDir);
 
 		GLfloat innerCutoffValue = glm::cos(glm::radians(8.0f));
@@ -307,7 +317,7 @@ int main()
 
 		shaderProgram.setFloat("spotlight.innerCutoff", innerCutoffValue);
 		shaderProgram.setFloat("spotlight.outerCutoff", outerCutoffValue);
-		
+
 		shaderProgram.setFloat("spotlight.linearFalloff", 0.03f);
 		shaderProgram.setFloat("spotlight.quadraticFalloff", 0.05f);
 	}
@@ -328,8 +338,6 @@ int main()
 	quadShader.Activate();
 	GLCall(glUniformMatrix4fv(glGetUniformLocation(quadShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(mainObjectMatrix)));
 
-	GLCall(glEnable(GL_DEPTH_TEST));
-
 #pragma endregion
 
 	while (!glfwWindowShouldClose(window))
@@ -338,8 +346,8 @@ int main()
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		lightShader.Activate();
-		lightPos.x = (float)sin(glfwGetTime());
-		lightPos.z = (float)cos(glfwGetTime());
+		lightPos.x = 5.0f * (float)sin(glfwGetTime());
+		lightPos.z = 5.0f * (float)cos(glfwGetTime());
 		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightPos);
 		GLCall(glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix)));
 
@@ -349,6 +357,8 @@ int main()
 
 		// setup for rendering the main opject
 		shaderProgram.Activate();
+
+		model.Draw(shaderProgram);
 
 		// Passing the camera position vector as a uniform to the object's shader file
 		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "spotlight.position"), lightPos.x, lightPos.y, lightPos.z));
@@ -363,7 +373,7 @@ int main()
 		VAO1.Bind();
 
 		const int indexCount = sizeof(indicesPyramidLighting) / sizeof(int);
-		GLCall(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
+		//GLCall(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
 
 		// setup for rendering the light cube
 		lightShader.Activate();
@@ -371,7 +381,7 @@ int main()
 		lightVAO.Bind();
 
 		const int indexCountLight = sizeof(lightIndices) / sizeof(int);
-		GLCall(glDrawElements(GL_TRIANGLES, indexCountLight, GL_UNSIGNED_INT, 0));
+		//GLCall(glDrawElements(GL_TRIANGLES, indexCountLight, GL_UNSIGNED_INT, 0));
 
 		//quadShader.Activate();
 		//camera.MatrixUniform(quadShader, "camMatrix");
