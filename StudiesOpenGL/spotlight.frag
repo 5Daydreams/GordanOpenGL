@@ -10,8 +10,8 @@ in vec3 Normal;
 
 // uniforms represent the _same value_ for all fragments within a shader instace, 
 // hard-push to use "uniform" instead of "varying" variables, as those can take up significantly more time to process
-uniform sampler2D tex0;
-uniform sampler2D tex1;
+//uniform sampler2D tex0;
+//uniform sampler2D tex1;
 
 struct Material {
     vec3 ambient;
@@ -37,14 +37,14 @@ struct Light {
 };
 
 uniform Material material;
-uniform Light light;  
+uniform Light spotlight;  
 uniform vec3 camPos;
 
 void main()
 {
 	// diffuse lighting
 	vec3 normal = normalize(Normal);
-	vec3 lightDirection = normalize(light.position - FragPos);
+	vec3 lightDirection = normalize(spotlight.position - FragPos);
 	float diffuse = max(dot(normal, lightDirection), 0.0f);
 
 	// specular lighting
@@ -53,27 +53,27 @@ void main()
 	float specularGradient = max(dot(viewDirection, reflectionDirection), 0.0f);
 	float specAmount = pow(specularGradient, material.shininess);
 
-	float specularLight = texture(tex1, texCoord).r; // Specular map
+	float specularLight = 1.0f; // texture(tex1, texCoord).r; // Specular map // (!) Removed temporarily for flat surface debugging
 	float specular = specAmount * specularLight;
 
 	// spotlight effect
-    float theta = dot(lightDirection, normalize(-light.spotDirection)); 
-    float epsilon = (light.innerCutoff - light.outerCutoff);
-    float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+    float theta = dot(lightDirection, normalize(-spotlight.spotDirection)); 
+    float epsilon = (spotlight.innerCutoff - spotlight.outerCutoff);
+    float intensity = clamp((theta - spotlight.outerCutoff) / epsilon, 0.0, 1.0);
     
 	diffuse  *= intensity;
     specular *= intensity;
 
 	// attenuation - the keyword "distance" is already taken by glsl
-    float dist = length(light.position - FragPos);
-    float attenuation = 1.0 / (1.0f + light.linearFalloff * dist + light.quadraticFalloff * (dist * dist));    
+    float dist = length(spotlight.position - FragPos);
+    float attenuation = 1.0f / (1.0f + spotlight.linearFalloff * dist + spotlight.quadraticFalloff * (dist * dist));    
 
-	vec4 texColor = texture(tex0, texCoord);
+//	vec4 texColor = texture(tex0, texCoord); // (!) Removed temporarily for flat surface debugging
 
 	// ambient light is assumed to be full white always
-	vec3 ambientColor  = light.ambient * material.ambient * texColor.xyz; 
-	vec3 diffuseColor  = light.diffuse * diffuse * material.diffuse * texColor.xyz;
-	vec3 specularColor = light.specular * specular * material.specular;
+	vec3 ambientColor  = spotlight.ambient * material.ambient; // * texColor.xyz; 
+	vec3 diffuseColor  = spotlight.diffuse * diffuse * material.diffuse; // * texColor.xyz;
+	vec3 specularColor = spotlight.specular * specular * material.specular;
 
 	vec3 result = (ambientColor + diffuseColor + specularColor) * attenuation;
 	FragColor = vec4(result,1.0f);

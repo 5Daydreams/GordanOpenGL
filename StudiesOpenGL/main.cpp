@@ -223,7 +223,7 @@ int main()
 	Model model(pathString);
 
 	// Generates Shader object using defualt.vert and default.frag shaders
-	Shader shaderProgram("default.vert", "multiLight.frag");
+	Shader shaderProgram("default.vert", "spotlight.frag");
 	Shader outlineProgram("stencilOutline.vert", "stencilOutline.frag");
 
 	// Generates Vertex Array Object and binds it
@@ -321,7 +321,7 @@ int main()
 
 	float outlineRange = 1.10f;
 	glm::mat4 outlineMatrix = glm::mat4(1.0f);
-	outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, 0.92f * outlineRange, outlineRange));
+	outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, outlineRange, outlineRange));
 	outlineMatrix = glm::translate(outlineMatrix , mainObjectPos);
 
 	outlineProgram.Activate();
@@ -368,10 +368,14 @@ int main()
 	shaderProgram.setVec3("spotlight.diffuse", lightDiffuse);
 	shaderProgram.setVec3("spotlight.specular", lightSpecular);
 
-	Texture texture("PebblesTile.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	texture.texUnit(shaderProgram, "material.albedo", 0);
-	Texture specular("PebblesTileSpecular.png", GL_TEXTURE_2D, 1, GL_RGBA, GL_UNSIGNED_BYTE);
-	specular.texUnit(shaderProgram, "material.specular", 1);
+	shaderProgram.setVec3("material.ambient",glm::vec3(1.0f,1.0f,1.0f));
+	shaderProgram.setVec3("material.diffuse",glm::vec3(0.3f,0.5f,0.8f));
+	shaderProgram.setVec3("material.specular",glm::vec3(0.1f,0.1f,0.1f));
+
+	//Texture texture("PebblesTile.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
+	//texture.texUnit(shaderProgram, "material.albedo", 0);
+	//Texture specular("PebblesTileSpecular.png", GL_TEXTURE_2D, 1, GL_RGBA, GL_UNSIGNED_BYTE);
+	//specular.texUnit(shaderProgram, "material.specular", 1);
 
 	quadShader.Activate();
 	quadShader.setMat4("model",mainObjectMatrix);
@@ -427,8 +431,8 @@ int main()
 		// Passing the camera model * projection matrix as a uniform to the object's shader file
 		camera.MatrixUniform(shaderProgram, "camMatrix");
 
-		texture.Bind();
-		specular.Bind();
+		//texture.Bind();
+		//specular.Bind();
 		VAO1.Bind();
 
 		const int indexCount = sizeof(indicesPyramidLighting) / sizeof(int);
@@ -460,8 +464,8 @@ int main()
 	VAO1.Delete();
 	VBO1.Delete();
 	EBO1.Delete();
-	texture.Delete();
-	specular.Delete();
+	//texture.Delete();
+	//specular.Delete();
 	shaderProgram.Delete();
 
 	lightVAO.Delete();
