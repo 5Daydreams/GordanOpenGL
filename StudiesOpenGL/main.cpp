@@ -182,19 +182,49 @@ int main()
 	// viewport size, as in, where we want to render at
 	GLCall(glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
 
+#pragma region Depth Buffer
+
 	GLCall(glEnable(GL_DEPTH_TEST));
+
+	// To not write into the depth buffer, use:
+	// GLCall(glDepthMask(GL_FALSE));
+	// This requires enabling the depth buffer, otherwise it has no effect
+
+	GLCall(glDepthFunc(GL_LESS));
+	// The default value is GL_LESS, but:
+	// Function		Description
+	// GL_ALWAYS	The depth test always passes.
+	// GL_NEVER		The depth test never passes.
+	// GL_LESS		Passes if the fragment's depth value is less than the stored depth value.
+	// GL_EQUAL		Passes if the fragment's depth value is equal to the stored depth value.
+	// GL_LEQUAL	Passes if the fragment's depth value is less than or equal to the stored depth value.
+	// GL_GREATER	Passes if the fragment's depth value is greater than the stored depth value.
+	// GL_NOTEQUAL	Passes if the fragment's depth value is not equal to the stored depth value.
+	// GL_GEQUAL	Passes if the fragment's depth value is greater than or equal to the stored depth value.
+	// All of the above are valid too
+
+#pragma endregion
+
+#pragma region Stencil Buffer
+
+	GLCall(glEnable(GL_STENCIL_TEST));
+	GLCall(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
+
+#pragma endregion
 
 	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.3f, 3.0f));
 
 #pragma endregion
 
-	std::string pathString = "Models/starship.fbx";
-	Model model(pathString);
-
 #pragma region mainObject shader and VAO
+
+	// Loading model
+	std::string pathString = "Models/Suzanne.fbx";
+	Model model(pathString);
 
 	// Generates Shader object using defualt.vert and default.frag shaders
 	Shader shaderProgram("default.vert", "multiLight.frag");
+	Shader outlineProgram("stencilOutline.vert", "stencilOutline.frag");
 
 	// Generates Vertex Array Object and binds it
 	VAO VAO1;
@@ -289,6 +319,14 @@ int main()
 	mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
 	mainObjectMatrix = glm::translate(mainObjectMatrix, mainObjectPos);
 
+	float outlineRange = 1.10f;
+	glm::mat4 outlineMatrix = glm::mat4(1.0f);
+	outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, 0.92f * outlineRange, outlineRange));
+	outlineMatrix = glm::translate(outlineMatrix , mainObjectPos);
+
+	outlineProgram.Activate();
+	outlineProgram.setMat4("model", outlineMatrix);
+
 	shaderProgram.Activate();
 	shaderProgram.setMat4("model", mainObjectMatrix);
 	shaderProgram.setFloat("material.shininess", 32.0f);
@@ -312,8 +350,8 @@ int main()
 		glm::vec3 spotlightDir = glm::vec3(-1.0f, -1.0f, -1.0f);
 		shaderProgram.setVec3("spotlight.spotDirection", spotlightDir);
 
-		GLfloat innerCutoffValue = glm::cos(glm::radians(8.0f));
-		GLfloat outerCutoffValue = glm::cos(glm::radians(12.0f));
+		GLfloat innerCutoffValue = glm::cos(glm::radians(20.0f));
+		GLfloat outerCutoffValue = glm::cos(glm::radians(45.0f));
 
 		shaderProgram.setFloat("spotlight.innerCutoff", innerCutoffValue);
 		shaderProgram.setFloat("spotlight.outerCutoff", outerCutoffValue);
@@ -336,35 +374,56 @@ int main()
 	specular.texUnit(shaderProgram, "material.specular", 1);
 
 	quadShader.Activate();
-	GLCall(glUniformMatrix4fv(glGetUniformLocation(quadShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(mainObjectMatrix)));
+	quadShader.setMat4("model",mainObjectMatrix);
 
 #pragma endregion
 
 	while (!glfwWindowShouldClose(window))
 	{
 		GLCall(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
-		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
 
 		lightShader.Activate();
-		lightPos.x = 5.0f * (float)sin(glfwGetTime());
-		lightPos.z = 5.0f * (float)cos(glfwGetTime());
+		lightPos.x = 3.0f * (float)sin(glfwGetTime());
+		lightPos.z = 3.0f * (float)cos(glfwGetTime());
 		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightPos);
-		GLCall(glUniformMatrix4fv(glGetUniformLocation(lightShader.ID, "model"), 1, GL_FALSE, glm::value_ptr(lightModelMatrix)));
+		lightShader.setMat4("model", lightModelMatrix);
 
 		// camera events
 		camera.Inputs(window);
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
-		// setup for rendering the main opject
+		// setup for rendering the main object
 		shaderProgram.Activate();
 
+		// Regularly drawing the object 
+		GLCall(glStencilFunc(GL_ALWAYS, 1, 0xFF));
+		GLCall(glStencilMask(0xFF));
 		model.Draw(shaderProgram);
 
+		GLCall(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
+		GLCall(glStencilMask(0x00));
+		GLCall(glDisable(GL_DEPTH_TEST));
+
+		// Masking the object for the stencil effect
+		outlineProgram.Activate();
+		model.Draw(outlineProgram);
+
+		GLCall(glStencilMask(0xFF));
+		GLCall(glStencilFunc(GL_ALWAYS, 0, 0xFF));
+		GLCall(glEnable(GL_DEPTH_TEST));
+
+		camera.MatrixUniform(outlineProgram, "camMatrix");
+
+		shaderProgram.Activate();
 		// Passing the camera position vector as a uniform to the object's shader file
-		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "spotlight.position"), lightPos.x, lightPos.y, lightPos.z));
+		shaderProgram.setVec3("spotlight.position", lightPos.x, lightPos.y, lightPos.z);
+		// GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "spotlight.position"), lightPos.x, lightPos.y, lightPos.z));
+
 		glm::vec3 spotlightDir = mainObjectPos - lightPos;
 		shaderProgram.setVec3("spotlight.spotDirection", spotlightDir);
-		GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z));
+		shaderProgram.setVec3("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
+		//GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z));
 		// Passing the camera model * projection matrix as a uniform to the object's shader file
 		camera.MatrixUniform(shaderProgram, "camMatrix");
 
@@ -381,7 +440,7 @@ int main()
 		lightVAO.Bind();
 
 		const int indexCountLight = sizeof(lightIndices) / sizeof(int);
-		//GLCall(glDrawElements(GL_TRIANGLES, indexCountLight, GL_UNSIGNED_INT, 0));
+		GLCall(glDrawElements(GL_TRIANGLES, indexCountLight, GL_UNSIGNED_INT, 0));
 
 		//quadShader.Activate();
 		//camera.MatrixUniform(quadShader, "camMatrix");

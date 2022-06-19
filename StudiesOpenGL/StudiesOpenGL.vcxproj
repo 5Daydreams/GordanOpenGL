@@ -175,6 +175,7 @@
   <ItemGroup>
     <None Include="default.frag" />
     <None Include="default.vert" />
+    <None Include="depthBuffer.frag" />
     <None Include="directionalLight.frag" />
     <None Include="light.frag" />
     <None Include="light.vert" />
@@ -183,6 +184,8 @@
     <None Include="quadUV.frag" />
     <None Include="quadUV.vert" />
     <None Include="spotlight.frag" />
+    <None Include="stencilOutline.frag" />
+    <None Include="stencilOutline.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EBO.h" />
