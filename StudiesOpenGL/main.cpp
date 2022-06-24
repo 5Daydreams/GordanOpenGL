@@ -14,6 +14,7 @@
 #include "EBO.h"
 #include "Camera.h"
 #include "Model.h"
+#include "ModelBuilder.h"
 
 #pragma region vertexMeshes
 
@@ -151,8 +152,8 @@ int main()
 	glfwInit();
 
 	// window hints, information necessary to create wwindow
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	// create a window - notice the distinction between Window and Monitor - 
@@ -220,7 +221,12 @@ int main()
 
 	// Loading model
 	std::string pathString = "Models/Suzanne.fbx";
-	Model model(pathString);
+
+	ModelBuilder mBuilder;
+
+	mBuilder.With_path(pathString);
+
+	Model model = mBuilder.Build();
 
 	// Generates Shader object using defualt.vert and default.frag shaders
 	Shader shaderProgram("default.vert", "spotlight.frag");
