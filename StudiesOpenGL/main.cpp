@@ -204,6 +204,10 @@ int main()
 	// GL_GEQUAL	Passes if the fragment's depth value is greater than or equal to the stored depth value.
 	// All of the above are valid too
 
+	// Thinking here - GL_LESS means "objects which are closer can render", therefore....
+	//GLCall(glDepthFunc(GL_LESS));
+	//GLCall(glDepthFunc(GL_GREATER));
+
 #pragma endregion
 
 #pragma region Stencil Buffer
@@ -394,8 +398,9 @@ int main()
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
 
 		lightShader.Activate();
-		lightPos.x = 3.0f * (float)sin(glfwGetTime());
-		lightPos.z = 3.0f * (float)cos(glfwGetTime());
+		lightPos.x = 0.0f + 2.0f * (float)sin(glfwGetTime());
+		lightPos.z = 0.0f + 2.0f * (float)cos(glfwGetTime());
+		lightPos.y = 1.0f + 0.0f * (float)cos(glfwGetTime());
 		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightPos);
 		lightShader.setMat4("model", lightModelMatrix);
 
@@ -404,7 +409,11 @@ int main()
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
 		// setup for rendering the main object
+		GLCall(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
+		GLCall(glDepthFunc(GL_LESS));
 		shaderProgram.Activate();
+		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+		shaderProgram.setMat4("model", mainObjectMatrix);
 
 		// Regularly drawing the object 
 		GLCall(glStencilFunc(GL_ALWAYS, 1, 0xFF));
@@ -417,10 +426,44 @@ int main()
 
 		// Masking the object for the stencil effect
 		outlineProgram.Activate();
+		outlineMatrix = glm::mat4(1.0f);
+		outlineMatrix = glm::translate(outlineMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
+		outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, outlineRange, outlineRange));
+		outlineProgram.setMat4("model", outlineMatrix);
+		
 		model.Draw(outlineProgram);
 
 		GLCall(glStencilMask(0xFF));
 		GLCall(glStencilFunc(GL_ALWAYS, 0, 0xFF));
+		GLCall(glEnable(GL_DEPTH_TEST));
+
+		// Regularly drawing the object a second time
+		GLCall(glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE));
+		GLCall(glDepthFunc(GL_GREATER));
+		shaderProgram.Activate();
+		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -15.0f));
+		shaderProgram.setMat4("model",mainObjectMatrix);
+
+		GLCall(glStencilFunc(GL_ALWAYS, 0, 0xFF));
+		GLCall(glStencilMask(0xFF));
+		model.Draw(shaderProgram);
+
+		GLCall(glStencilFunc(GL_NOTEQUAL, 0, 0xFF));
+		GLCall(glStencilMask(0x00));
+		GLCall(glDisable(GL_DEPTH_TEST));
+
+		// Masking the object for the stencil effect
+		outlineProgram.Activate();
+		outlineMatrix = glm::mat4(1.0f);
+		outlineMatrix = glm::translate(outlineMatrix, glm::vec3(0.0f, 0.0f, -15.0f));
+		outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, outlineRange, outlineRange));
+
+		outlineProgram.setMat4("model", outlineMatrix);
+		model.Draw(outlineProgram);
+
+		GLCall(glDepthFunc(GL_LESS));
+		GLCall(glStencilMask(0xFF));
+		GLCall(glStencilFunc(GL_ALWAYS, 1, 0xFF));
 		GLCall(glEnable(GL_DEPTH_TEST));
 
 		camera.MatrixUniform(outlineProgram, "camMatrix");
