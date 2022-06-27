@@ -224,7 +224,7 @@ int main()
 #pragma region mainObject shader and VAO
 
 	// Loading model
-	std::string pathString = "Models/Suzanne.fbx";
+	std::string pathString = "Models/cube.fbx";
 
 	ModelBuilder mBuilder;
 
