@@ -213,7 +213,22 @@ int main()
 #pragma region Stencil Buffer
 
 	GLCall(glEnable(GL_STENCIL_TEST));
+
 	GLCall(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
+	/* Parameters
+Eight symbolic constants are accepted: GL_KEEP, GL_ZERO, GL_REPLACE, GL_INCR, GL_INCR_WRAP, GL_DECR, GL_DECR_WRAP, and GL_INVERT. Initial value is GL_KEEP for all
+
+sfail (Stencil Failed)
+Specifies the action to take when the stencil test fails.
+
+dpfail (Stencil Success, Depth Fail)
+Specifies the stencil action when the stencil test passes, but the depth test fails.
+
+dppass (Stencil Success and Depth Success OR Stencil Success and Depth N/A)
+Specifies the stencil action when both the stencil test and the depth test pass, 
+or 
+when the stencil test passes and either there is no depth buffer or depth testing is not enabled.
+	*/
 
 #pragma endregion
 
@@ -224,7 +239,7 @@ int main()
 #pragma region mainObject shader and VAO
 
 	// Loading model
-	std::string pathString = "Models/cube.fbx";
+	std::string pathString = "Models/Suzanne.fbx";
 
 	ModelBuilder mBuilder;
 
@@ -409,20 +424,16 @@ int main()
 		camera.updateMatrix(45.0f, 0.1f, 100.0f);
 
 		// setup for rendering the main object
-		GLCall(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
-		GLCall(glDepthFunc(GL_LESS));
 		shaderProgram.Activate();
 		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 		shaderProgram.setMat4("model", mainObjectMatrix);
 
 		// Regularly drawing the object 
+		GLCall(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
+		GLCall(glDepthFunc(GL_LESS));
 		GLCall(glStencilFunc(GL_ALWAYS, 1, 0xFF));
 		GLCall(glStencilMask(0xFF));
 		model.Draw(shaderProgram);
-
-		GLCall(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
-		GLCall(glStencilMask(0x00));
-		GLCall(glDisable(GL_DEPTH_TEST));
 
 		// Masking the object for the stencil effect
 		outlineProgram.Activate();
@@ -431,26 +442,27 @@ int main()
 		outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, outlineRange, outlineRange));
 		outlineProgram.setMat4("model", outlineMatrix);
 		
+		GLCall(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
+		GLCall(glStencilMask(0x00));
+		GLCall(glDisable(GL_DEPTH_TEST));
+		
 		model.Draw(outlineProgram);
 
-		GLCall(glStencilMask(0xFF));
-		GLCall(glStencilFunc(GL_ALWAYS, 0, 0xFF));
-		GLCall(glEnable(GL_DEPTH_TEST));
-
 		// Regularly drawing the object a second time
-		GLCall(glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE));
-		GLCall(glDepthFunc(GL_GREATER));
 		shaderProgram.Activate();
 		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -15.0f));
 		shaderProgram.setMat4("model",mainObjectMatrix);
 
+		GLCall(glEnable(GL_DEPTH_TEST));
+		// Adjusting Depth test to run only if objects HAVE something in front of them 
+		// Running GL_ALWAYS is incorrect here, the stencil outlining happens only while in the first monkey's outline range
+		GLCall(glDepthFunc(GL_GREATER));
+
+		// Forcefully writing into the stencil buffer, using The value within glStencilFunc(...,value,...)
+		GLCall(glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE)); 
 		GLCall(glStencilFunc(GL_ALWAYS, 0, 0xFF));
 		GLCall(glStencilMask(0xFF));
 		model.Draw(shaderProgram);
-
-		GLCall(glStencilFunc(GL_NOTEQUAL, 0, 0xFF));
-		GLCall(glStencilMask(0x00));
-		GLCall(glDisable(GL_DEPTH_TEST));
 
 		// Masking the object for the stencil effect
 		outlineProgram.Activate();
@@ -459,6 +471,10 @@ int main()
 		outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, outlineRange, outlineRange));
 
 		outlineProgram.setMat4("model", outlineMatrix);
+
+		GLCall(glStencilFunc(GL_NOTEQUAL, 0, 0xFF));
+		GLCall(glStencilMask(0x00));
+		GLCall(glDisable(GL_DEPTH_TEST));
 		model.Draw(outlineProgram);
 
 		GLCall(glDepthFunc(GL_LESS));
