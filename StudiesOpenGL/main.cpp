@@ -128,6 +128,18 @@ int main()
 
 	Model model = Model(pathString);
 
+	VAO cubeVAO;
+	cubeVAO.Bind();
+
+	VBO cubeVBO(cubeVertices, sizeof(cubeVertices));
+	EBO cubeEBO(cubeIndices, sizeof(cubeIndices));
+
+	cubeVAO.LinkAttrib(cubeVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
+
+	cubeVAO.Unbind();
+	cubeVBO.Unbind();
+	cubeEBO.Unbind();
+
 	// Generates Shader object using defualt.vert and default.frag shaders
 	Shader shaderProgram("default.vert", "spotlight.frag");
 
@@ -141,7 +153,7 @@ int main()
 	VAO2.Bind();
 
 	VBO VBO2(quadVertices, sizeof(quadVertices));
-	EBO EBO2(quadIndices, sizeof(quadIndices));
+	EBO EBO2(quadIndices, 6);
 
 	VAO2.LinkAttrib(VBO2, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*)0);
 	VAO2.LinkAttrib(VBO2, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -154,7 +166,7 @@ int main()
 
 #pragma region lightCube shader and VAO
 
-	// The shader for the light cube
+	// The shader for the moving light cube
 	Shader lightShader("light.vert", "light.frag");
 
 	// Generates the Vertex Array for the light cube and binds it
@@ -257,17 +269,16 @@ int main()
 
 		// setup for rendering the main object
 		shaderProgram.Bind();
-		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
+		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		shaderProgram.setMat4("model", mainObjectMatrix);
 
 		// Regularly drawing the object 
-		GLCall(glDepthFunc(GL_LESS));
 		model.Draw(shaderProgram);
 
-		// Regularly drawing the object a second time
-		shaderProgram.Bind();
-		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -15.0f));
+		cubeVAO.Bind();
+		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
 		shaderProgram.setMat4("model", mainObjectMatrix);
+		GLCall(glDrawElements(GL_TRIANGLES, cubeEBO.count, GL_UNSIGNED_INT, 0));
 
 		shaderProgram.Bind();
 		// Passing the camera position vector as a uniform to the object's shader file
