@@ -124,7 +124,7 @@ int main()
 #pragma region mainObject shader and VAO
 
 	// Loading model
-	std::string pathString = "Models/sphere.fbx";
+	std::string pathString = "Models/starship.fbx";
 
 	Model model = Model(pathString);
 
@@ -270,15 +270,16 @@ int main()
 		// setup for rendering the main object
 		shaderProgram.Bind();
 		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(0.3f, 0.3f, 0.3f));
 		shaderProgram.setMat4("model", mainObjectMatrix);
 
 		// Regularly drawing the object 
 		model.Draw(shaderProgram);
 
-		cubeVAO.Bind();
-		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-		shaderProgram.setMat4("model", mainObjectMatrix);
-		GLCall(glDrawElements(GL_TRIANGLES, cubeEBO.count, GL_UNSIGNED_INT, 0));
+		//cubeVAO.Bind();
+		//mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+		//shaderProgram.setMat4("model", mainObjectMatrix);
+		//GLCall(glDrawElements(GL_TRIANGLES, cubeEBO.count, GL_UNSIGNED_INT, 0));
 
 		shaderProgram.Bind();
 		// Passing the camera position vector as a uniform to the object's shader file
