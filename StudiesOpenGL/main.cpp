@@ -67,7 +67,7 @@ GLuint cubeIndices[] =
 #pragma endregion
 
 const unsigned int SCREEN_WIDTH = 800;
-const unsigned int SCREEN_HEIGHT = 800;
+const unsigned int SCREEN_HEIGHT = 600;
 
 void ExitOnEsc(GLFWwindow* window)
 {
@@ -124,13 +124,12 @@ int main()
 #pragma region mainObject shader and VAO
 
 	// Loading model
-	std::string pathString = "Models/Suzanne.fbx";
+	std::string pathString = "Models/sphere.fbx";
 
 	Model model = Model(pathString);
 
 	// Generates Shader object using defualt.vert and default.frag shaders
 	Shader shaderProgram("default.vert", "spotlight.frag");
-	//Shader outlineProgram("stencilOutline.vert", "stencilOutline.frag");
 
 #pragma endregion
 
@@ -204,33 +203,12 @@ int main()
 	glm::mat4 mainObjectMatrix = glm::mat4(1.0f);
 	mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
 	mainObjectMatrix = glm::translate(mainObjectMatrix, mainObjectPos);
-
-	float outlineRange = 1.10f;
-	glm::mat4 outlineMatrix = glm::mat4(1.0f);
-	outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, outlineRange, outlineRange));
-	outlineMatrix = glm::translate(outlineMatrix, mainObjectPos);
-
-	//outlineProgram.Bind();
-	//outlineProgram.setMat4("model", outlineMatrix);
-
+	
 	shaderProgram.Bind();
 	shaderProgram.setMat4("model", mainObjectMatrix);
 	shaderProgram.setFloat("material.shininess", 32.0f);
 
-	if (false) // set to true for directional lighting setup
-	{
-		glm::vec3 lightDir = glm::vec3(0.3f, -1.0f, 0.3f);
-		shaderProgram.setVec3("light.direction", lightDir);
-	}
-
-	if (false) // set to true for point lighting setup
-	{
-		shaderProgram.setVec3("light.position", lightPos);
-		shaderProgram.setFloat("light.linearFalloff", 0.01f);
-		shaderProgram.setFloat("light.quadraticFalloff", 0.032f);
-	}
-
-	if (true) // set to true for spotlight setup
+	if (true) // spotlight setup
 	{
 		shaderProgram.setVec3("spotlight.position", lightPos);
 		glm::vec3 spotlightDir = glm::vec3(-1.0f, -1.0f, -1.0f);
@@ -248,7 +226,7 @@ int main()
 
 #pragma endregion
 
-#pragma region shader setups
+#pragma region shader setups (main object)
 
 	shaderProgram.setVec3("spotlight.ambient", lightAmbient);
 	shaderProgram.setVec3("spotlight.diffuse", lightDiffuse);
@@ -258,20 +236,12 @@ int main()
 	shaderProgram.setVec3("material.diffuse", glm::vec3(0.3f, 0.5f, 0.8f));
 	shaderProgram.setVec3("material.specular", glm::vec3(0.1f, 0.1f, 0.1f));
 
-	//Texture texture("PebblesTile.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	//texture.texUnit(shaderProgram, "material.albedo", 0);
-	//Texture specular("PebblesTileSpecular.png", GL_TEXTURE_2D, 1, GL_RGBA, GL_UNSIGNED_BYTE);
-	//specular.texUnit(shaderProgram, "material.specular", 1);
-
-	quadShader.Bind();
-	quadShader.setMat4("model", mainObjectMatrix);
-
 #pragma endregion
 
 	while (!glfwWindowShouldClose(window))
 	{
 		GLCall(glClearColor(0.07f, 0.13f, 0.17f, 1.0f));
-		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
+		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		lightShader.Bind();
 		lightPos.x = 0.0f + 2.0f * (float)sin(glfwGetTime());
@@ -291,70 +261,22 @@ int main()
 		shaderProgram.setMat4("model", mainObjectMatrix);
 
 		// Regularly drawing the object 
-		GLCall(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
 		GLCall(glDepthFunc(GL_LESS));
-		GLCall(glStencilFunc(GL_ALWAYS, 1, 0xFF));
-		GLCall(glStencilMask(0xFF));
 		model.Draw(shaderProgram);
-
-		// Masking the object for the stencil effect
-		//outlineProgram.Bind();
-		//outlineMatrix = glm::mat4(1.0f);
-		//outlineMatrix = glm::translate(outlineMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
-		//outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, outlineRange, outlineRange));
-		//outlineProgram.setMat4("model", outlineMatrix);
-
-		GLCall(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
-		GLCall(glStencilMask(0x00));
-		GLCall(glDisable(GL_DEPTH_TEST));
-
-		//model.Draw(outlineProgram);
 
 		// Regularly drawing the object a second time
 		shaderProgram.Bind();
 		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -15.0f));
 		shaderProgram.setMat4("model", mainObjectMatrix);
 
-		GLCall(glEnable(GL_DEPTH_TEST));
-		// Adjusting Depth test to run only if objects HAVE something in front of them 
-		// Running GL_ALWAYS is incorrect here, the stencil outlining happens only while in the first monkey's outline range
-		GLCall(glDepthFunc(GL_GREATER));
-
-		// Forcefully writing into the stencil buffer, using The value within glStencilFunc(...,value,...)
-		GLCall(glStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE));
-		GLCall(glStencilFunc(GL_ALWAYS, 0, 0xFF));
-		GLCall(glStencilMask(0xFF));
-		model.Draw(shaderProgram);
-
-		// Masking the object for the stencil effect
-		//outlineProgram.Bind();
-		//outlineMatrix = glm::mat4(1.0f);
-		//outlineMatrix = glm::translate(outlineMatrix, glm::vec3(0.0f, 0.0f, -15.0f));
-		//outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, outlineRange, outlineRange));
-
-		//outlineProgram.setMat4("model", outlineMatrix);
-
-		GLCall(glStencilFunc(GL_NOTEQUAL, 0, 0xFF));
-		GLCall(glStencilMask(0x00));
-		GLCall(glDisable(GL_DEPTH_TEST));
-		//model.Draw(outlineProgram);
-
-		GLCall(glDepthFunc(GL_LESS));
-		GLCall(glStencilMask(0xFF));
-		GLCall(glStencilFunc(GL_ALWAYS, 1, 0xFF));
-		GLCall(glEnable(GL_DEPTH_TEST));
-
-		//camera.MatrixUniform(outlineProgram, "camMatrix");
-
 		shaderProgram.Bind();
 		// Passing the camera position vector as a uniform to the object's shader file
 		shaderProgram.setVec3("spotlight.position", lightPos.x, lightPos.y, lightPos.z);
-		// GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "spotlight.position"), lightPos.x, lightPos.y, lightPos.z));
-
+		
 		glm::vec3 spotlightDir = mainObjectPos - lightPos;
 		shaderProgram.setVec3("spotlight.spotDirection", spotlightDir);
 		shaderProgram.setVec3("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
-		//GLCall(glUniform3f(glGetUniformLocation(shaderProgram.ID, "camPos"), camera.Position.x, camera.Position.y, camera.Position.z));
+		
 		// Passing the camera model * projection matrix as a uniform to the object's shader file
 		camera.MatrixUniform(shaderProgram, "camMatrix");
 
@@ -366,21 +288,15 @@ int main()
 		const int indexCountLight = sizeof(cubeIndices) / sizeof(int);
 		GLCall(glDrawElements(GL_TRIANGLES, indexCountLight, GL_UNSIGNED_INT, 0));
 
-		//quadShader.Activate();
-		//camera.MatrixUniform(quadShader, "camMatrix");
-		//VAO2.Bind();
-		//const int indexCountQuad = sizeof(indicesQuad) / sizeof(int);
-		//GLCall(glDrawElements(GL_TRIANGLES, indexCountQuad , GL_UNSIGNED_INT, 0));
-
 		// Swap render buffers
 		glfwSwapBuffers(window);
-		// handle window events
+		// handle window events, I think also inputs?
 		glfwPollEvents();
 
 		ExitOnEsc(window);
 	}
 
-	// Deleting the abstracted GPU objects
+ 	// Deleting the abstracted GPU objects
 	shaderProgram.Delete();
 
 	lightVAO.Delete();
