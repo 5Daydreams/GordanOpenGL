@@ -48,18 +48,18 @@ void Texture::texUnit(Shader& shader, const char* uniform, GLuint _unit)
 	// Gets the location of the uniform
 	GLCall(GLuint texUni = glGetUniformLocation(shader.ID, uniform));
 	// Shader needs to be activated before changing the value of a uniform
-	shader.Activate();
+	shader.Bind();
 	// Sets the value of the uniform
 	GLCall(glUniform1i(texUni, _unit));
 }
 
-void Texture::Bind()
+void Texture::Bind() const
 {
 	GLCall(glActiveTexture(GL_TEXTURE0 + unit));
 	GLCall(glBindTexture(type, ID));
 }
 
-void Texture::Unbind()
+void Texture::Unbind() const
 {
 	GLCall(glBindTexture(type, 0));
 }

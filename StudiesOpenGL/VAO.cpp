@@ -21,13 +21,13 @@ void VAO::LinkAttrib(VBO& VBO, GLuint layout, GLuint numComponents, GLenum type,
 }
 
 // Binds the VAO
-void VAO::Bind()
+void VAO::Bind() const
 {
 	GLCall(glBindVertexArray(ID));
 }
 
 // Unbinds the VAO
-void VAO::Unbind()
+void VAO::Unbind() const
 {
 	GLCall(glBindVertexArray(0));
 }

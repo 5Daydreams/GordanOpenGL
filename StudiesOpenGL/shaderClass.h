@@ -19,7 +19,7 @@ public:
 	GLuint ID;
 	Shader(const char* vertexFile, const char* fragmentFile);
 
-	void Activate();
+	void Bind() const;
 	void Delete();
 
     void setBool(const std::string& name, bool value) const;

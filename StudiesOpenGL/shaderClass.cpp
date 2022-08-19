@@ -44,7 +44,7 @@ Shader::Shader(const char* vertexFile, const char* fragmentFile)
 	GLCall(glDeleteShader(fragmentShader));
 }
 
-void Shader::Activate()
+void Shader::Bind() const
 {
 	GLCall(glUseProgram(ID));
 }

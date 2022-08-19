@@ -16,9 +16,19 @@
 #include "Model.h"
 #include "ModelBuilder.h"
 
-#pragma region quadMesh
+#pragma region vertexMeshes
 
-GLfloat quadVertices[] =
+GLfloat verticesTri[] =
+{ //               COORDS                        /       COLORS          //
+	-0.5f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,   0.80f, 0.30f, 0.02f, // Lower left corner
+	 0.5f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,   0.80f, 0.30f, 0.02f, // Lower right corner
+	 0.0f,  0.5f * float(sqrt(3)) * 2 / 3, 0.0f,   1.00f, 0.60f, 0.32f, // Upper corner
+	-0.25f, 0.5f * float(sqrt(3)) * 1 / 6, 0.0f,   0.00f, 0.45f, 0.77f, // Inner left
+	 0.25f, 0.5f * float(sqrt(3)) * 1 / 6, 0.0f,   0.00f, 0.45f, 0.77f, // Inner right
+	 0.0f, -0.5f * float(sqrt(3)) * 1 / 3, 0.0f,   0.20f, 0.30f, 0.80f  // Inner down
+};
+
+GLfloat verticesQuad[] =
 { //     COORDS       /     UV_COORDS    //
 	-1.0f, -1.0f, 0.0f,     0.0f, 0.0f,
 	+1.0f, -1.0f, 0.0f,     1.0f, 0.0f,
@@ -26,29 +36,89 @@ GLfloat quadVertices[] =
 	-1.0f, +1.0f, 0.0f,     0.0f, 1.0f
 };
 
-GLuint quadIndices[]
+GLfloat verticesPyramid[] =
+{ //    COORDS            /       COLORS       /      UV_COORDS    //
+	-0.5f, +0.0f, +0.5f,     0.80f, 0.30f, 0.02f,	  0.0f, 1.0f,
+	-0.5f, +0.0f, -0.5f,     0.80f, 0.30f, 0.02f,	  0.0f, 0.0f,
+	+0.5f, +0.0f, -0.5f,     0.80f, 0.30f, 0.02f,	  1.0f, 0.0f,
+	+0.5f, +0.0f, +0.5f,     1.00f, 0.60f, 0.32f,	  0.0f, 0.0f,
+	+0.0f, +0.8f, +0.0f,     0.00f, 0.45f, 0.77f,     1.0f, 1.0f
+};
+
+GLfloat verticesPyramidLighting[] =
+{ //     COORDINATES    /    TexCoord    /        NORMALS       //
+	-0.5f, 0.0f,  0.5f,     0.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+	-0.5f, 0.0f, -0.5f,     0.0f, 2.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+	 0.5f, 0.0f, -0.5f,     2.0f, 2.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+	 0.5f, 0.0f,  0.5f,     2.0f, 0.0f,      0.0f, -1.0f, 0.0f, // Bottom side
+
+	-0.5f, 0.0f,  0.5f,     0.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+	-0.5f, 0.0f, -0.5f,     2.0f, 0.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+	 0.0f, 0.8f,  0.0f,     1.0f, 2.0f,     -0.8f, 0.5f,  0.0f, // Left Side
+
+	-0.5f, 0.0f, -0.5f,     2.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+	 0.5f, 0.0f, -0.5f,     0.0f, 0.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+	 0.0f, 0.8f,  0.0f,     1.0f, 2.0f,      0.0f, 0.5f, -0.8f, // Non-facing side
+
+	 0.5f, 0.0f, -0.5f,     0.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
+	 0.5f, 0.0f,  0.5f,     2.0f, 0.0f,      0.8f, 0.5f,  0.0f, // Right side
+	 0.0f, 0.8f,  0.0f,     1.0f, 2.0f,      0.8f, 0.5f,  0.0f, // Right side
+
+	 0.5f, 0.0f,  0.5f,     2.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
+	-0.5f, 0.0f,  0.5f,     0.0f, 0.0f,      0.0f, 0.5f,  0.8f, // Facing side
+	 0.0f, 0.8f,  0.0f,     1.0f, 2.0f,      0.0f, 0.5f,  0.8f  // Facing side
+};
+
+GLuint indicesTri[]
+{
+	0, 3, 5,
+	3, 2, 4,
+	5, 4, 1
+};
+
+GLuint indicesQuad[]
 {
 	0, 1, 2,
 	0, 2, 3
 };
 
-#pragma endregion
-
-#pragma region cubeMesh
-
-GLfloat cubeVertices[] =
-{ //     COORDINATES     //
-	-1.0f, -1.0f,  1.0f,
-	-1.0f, -1.0f, -1.0f,
-	 1.0f, -1.0f, -1.0f,
-	 1.0f, -1.0f,  1.0f,
-	-1.0f,  1.0f,  1.0f,
-	-1.0f,  1.0f, -1.0f,
-	 1.0f,  1.0f, -1.0f,
-	 1.0f,  1.0f,  1.0f
+GLuint indicesPyramid[]
+{
+	0, 1, 2,
+	0, 2, 3,
+	0, 1, 4,
+	1, 2, 4,
+	2, 3, 4,
+	3, 0, 4
 };
 
-GLuint cubeIndices[] =
+GLuint indicesPyramidLighting[] =
+{
+	0, 1, 2, // Bottom side
+	0, 2, 3, // Bottom side
+	4, 6, 5, // Left side
+	7, 9, 8, // Non-facing side
+	10, 12, 11, // Right side
+	13, 15, 14 // Facing side
+};
+
+#pragma endregion
+
+#pragma region lightMesh
+
+GLfloat lightVertices[] =
+{ //     COORDINATES     //
+	-0.1f, -0.1f,  0.1f,
+	-0.1f, -0.1f, -0.1f,
+	 0.1f, -0.1f, -0.1f,
+	 0.1f, -0.1f,  0.1f,
+	-0.1f,  0.1f,  0.1f,
+	-0.1f,  0.1f, -0.1f,
+	 0.1f,  0.1f, -0.1f,
+	 0.1f,  0.1f,  0.1f
+};
+
+GLuint lightIndices[] =
 {
 	0, 1, 2,
 	0, 2, 3,
@@ -69,13 +139,14 @@ GLuint cubeIndices[] =
 const unsigned int SCREEN_WIDTH = 800;
 const unsigned int SCREEN_HEIGHT = 800;
 
-void ExitOnEsc(GLFWwindow* window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
-}
+// // Commented due to usage somewhere else
+//void ExitOnEsc(GLFWwindow* window)
+//{
+//	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+//		glfwSetWindowShouldClose(window, true);
+//}
 
-int main()
+int monkeyMain()
 {
 #pragma region window and camera setup
 
@@ -107,15 +178,60 @@ int main()
 		return -1;
 	}
 
-	// Fixed that thing that Unreal does, where it flips textures upside down
+	// Fixed that stupid thing that Unreal does, where it flips textures upside down
 	stbi_set_flip_vertically_on_load(true);
 
 	// viewport size, as in, where we want to render at
 	GLCall(glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT));
 
-	// Enables Depth test, prioritizing closer objects (menmonic: LESS distant)
+#pragma region Depth Buffer
+
 	GLCall(glEnable(GL_DEPTH_TEST));
+
+	// To not write into the depth buffer, use:
+	// GLCall(glDepthMask(GL_FALSE));
+	// This requires enabling the depth buffer, otherwise it has no effect
+
 	GLCall(glDepthFunc(GL_LESS));
+	// The default value is GL_LESS, but:
+	// Function		Description
+	// GL_ALWAYS	The depth test always passes.
+	// GL_NEVER		The depth test never passes.
+	// GL_LESS		Passes if the fragment's depth value is less than the stored depth value.
+	// GL_EQUAL		Passes if the fragment's depth value is equal to the stored depth value.
+	// GL_LEQUAL	Passes if the fragment's depth value is less than or equal to the stored depth value.
+	// GL_GREATER	Passes if the fragment's depth value is greater than the stored depth value.
+	// GL_NOTEQUAL	Passes if the fragment's depth value is not equal to the stored depth value.
+	// GL_GEQUAL	Passes if the fragment's depth value is greater than or equal to the stored depth value.
+	// All of the above are valid too
+
+	// Thinking here - GL_LESS means "objects which are closer can render", therefore....
+	//GLCall(glDepthFunc(GL_LESS));
+	//GLCall(glDepthFunc(GL_GREATER));
+
+#pragma endregion
+
+#pragma region Stencil Buffer
+
+	GLCall(glEnable(GL_STENCIL_TEST));
+
+	GLCall(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
+	/* Parameters
+Eight symbolic constants are accepted: GL_KEEP, GL_ZERO, GL_REPLACE, GL_INCR, GL_INCR_WRAP, GL_DECR, GL_DECR_WRAP, and GL_INVERT. Initial value is GL_KEEP for all
+
+sfail (Stencil Failed)
+Specifies the action to take when the stencil test fails.
+
+dpfail (Stencil Success, Depth Fail)
+Specifies the stencil action when the stencil test passes, but the depth test fails.
+
+dppass (Stencil Success and Depth Success OR Stencil Success and Depth N/A)
+Specifies the stencil action when both the stencil test and the depth test pass,
+or
+when the stencil test passes and either there is no depth buffer or depth testing is not enabled.
+	*/
+
+#pragma endregion
 
 	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.3f, 3.0f));
 
@@ -126,11 +242,38 @@ int main()
 	// Loading model
 	std::string pathString = "Models/Suzanne.fbx";
 
-	Model model = Model(pathString);
+	// Testing builder pattern ----------
+	ModelBuilder mBuilder;
+
+	mBuilder.With_path(pathString);
+
+	Model model = mBuilder.Build();
 
 	// Generates Shader object using defualt.vert and default.frag shaders
 	Shader shaderProgram("default.vert", "spotlight.frag");
-	//Shader outlineProgram("stencilOutline.vert", "stencilOutline.frag");
+	Shader outlineProgram("stencilOutline.vert", "stencilOutline.frag");
+
+	// Generates Vertex Array Object and binds it
+	VAO VAO1;
+	VAO1.Bind();
+
+	// Generates Vertex Buffer Object and links it to vertices
+	VBO VBO1(verticesPyramidLighting, sizeof(verticesPyramidLighting));
+	// Generates Element Buffer Object and links it to indices
+	EBO EBO1(indicesPyramidLighting, sizeof(indicesPyramidLighting));
+
+	// Links VBO attributes such as coordinates and colors to VAO
+	VAO1.LinkAttrib(VBO1, 0, 3, GL_FLOAT, 8 * sizeof(float), (void*)0);
+	VAO1.LinkAttrib(VBO1, 1, 2, GL_FLOAT, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	VAO1.LinkAttrib(VBO1, 2, 3, GL_FLOAT, 8 * sizeof(float), (void*)(5 * sizeof(float)));
+
+	// (!) As of right now in the code, its safe to assume that the VBO's are highly packed and not particularly modularized, 
+	// or at least there should be a better way to structure their data 
+
+	// Unbind all to prevent accidentally modifying them
+	VAO1.Unbind();
+	VBO1.Unbind();
+	EBO1.Unbind();
 
 #pragma endregion
 
@@ -141,8 +284,8 @@ int main()
 	VAO VAO2;
 	VAO2.Bind();
 
-	VBO VBO2(quadVertices, sizeof(quadVertices));
-	EBO EBO2(quadIndices, sizeof(quadIndices));
+	VBO VBO2(verticesQuad, sizeof(verticesQuad));
+	EBO EBO2(indicesQuad, sizeof(indicesQuad));
 
 	VAO2.LinkAttrib(VBO2, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*)0);
 	VAO2.LinkAttrib(VBO2, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
@@ -163,8 +306,8 @@ int main()
 	lightVAO.Bind();
 
 	// Generates the vertices and indices for the light
-	VBO lightVBO(cubeVertices, sizeof(cubeVertices));
-	EBO lightEBO(cubeIndices, sizeof(cubeIndices));
+	VBO lightVBO(lightVertices, sizeof(lightVertices));
+	EBO lightEBO(lightIndices, sizeof(lightIndices));
 
 	// Links VBO attributes to VAO (in this case, its just vertex positions)
 	lightVAO.LinkAttrib(lightVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
@@ -185,9 +328,7 @@ int main()
 	glm::vec3 lightColor = lightDiffuse;
 
 	glm::vec3 lightPos = glm::vec3(1.0f, 1.5f, 1.0f);
-	glm::vec3 lightScale = glm::vec3(0.1f,0.1f,0.1f);
 	glm::mat4 lightModelMatrix = glm::mat4(1.0f);
-	lightModelMatrix = glm::scale(lightModelMatrix, lightScale);
 	lightModelMatrix = glm::translate(lightModelMatrix, lightPos);
 
 	lightShader.Bind();
@@ -210,8 +351,8 @@ int main()
 	outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, outlineRange, outlineRange));
 	outlineMatrix = glm::translate(outlineMatrix, mainObjectPos);
 
-	//outlineProgram.Bind();
-	//outlineProgram.setMat4("model", outlineMatrix);
+	outlineProgram.Bind();
+	outlineProgram.setMat4("model", outlineMatrix);
 
 	shaderProgram.Bind();
 	shaderProgram.setMat4("model", mainObjectMatrix);
@@ -278,7 +419,6 @@ int main()
 		lightPos.z = 0.0f + 2.0f * (float)cos(glfwGetTime());
 		lightPos.y = 1.0f + 0.0f * (float)cos(glfwGetTime());
 		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightPos);
-		lightModelMatrix = glm::scale(lightModelMatrix, lightScale);
 		lightShader.setMat4("model", lightModelMatrix);
 
 		// camera events
@@ -298,17 +438,17 @@ int main()
 		model.Draw(shaderProgram);
 
 		// Masking the object for the stencil effect
-		//outlineProgram.Bind();
-		//outlineMatrix = glm::mat4(1.0f);
-		//outlineMatrix = glm::translate(outlineMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
-		//outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, outlineRange, outlineRange));
-		//outlineProgram.setMat4("model", outlineMatrix);
+		outlineProgram.Bind();
+		outlineMatrix = glm::mat4(1.0f);
+		outlineMatrix = glm::translate(outlineMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
+		outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, outlineRange, outlineRange));
+		outlineProgram.setMat4("model", outlineMatrix);
 
 		GLCall(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
 		GLCall(glStencilMask(0x00));
 		GLCall(glDisable(GL_DEPTH_TEST));
 
-		//model.Draw(outlineProgram);
+		model.Draw(outlineProgram);
 
 		// Regularly drawing the object a second time
 		shaderProgram.Bind();
@@ -327,24 +467,24 @@ int main()
 		model.Draw(shaderProgram);
 
 		// Masking the object for the stencil effect
-		//outlineProgram.Bind();
-		//outlineMatrix = glm::mat4(1.0f);
-		//outlineMatrix = glm::translate(outlineMatrix, glm::vec3(0.0f, 0.0f, -15.0f));
-		//outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, outlineRange, outlineRange));
+		outlineProgram.Bind();
+		outlineMatrix = glm::mat4(1.0f);
+		outlineMatrix = glm::translate(outlineMatrix, glm::vec3(0.0f, 0.0f, -15.0f));
+		outlineMatrix = glm::scale(outlineMatrix, glm::vec3(outlineRange, outlineRange, outlineRange));
 
-		//outlineProgram.setMat4("model", outlineMatrix);
+		outlineProgram.setMat4("model", outlineMatrix);
 
 		GLCall(glStencilFunc(GL_NOTEQUAL, 0, 0xFF));
 		GLCall(glStencilMask(0x00));
 		GLCall(glDisable(GL_DEPTH_TEST));
-		//model.Draw(outlineProgram);
+		model.Draw(outlineProgram);
 
 		GLCall(glDepthFunc(GL_LESS));
 		GLCall(glStencilMask(0xFF));
 		GLCall(glStencilFunc(GL_ALWAYS, 1, 0xFF));
 		GLCall(glEnable(GL_DEPTH_TEST));
 
-		//camera.MatrixUniform(outlineProgram, "camMatrix");
+		camera.MatrixUniform(outlineProgram, "camMatrix");
 
 		shaderProgram.Bind();
 		// Passing the camera position vector as a uniform to the object's shader file
@@ -358,12 +498,19 @@ int main()
 		// Passing the camera model * projection matrix as a uniform to the object's shader file
 		camera.MatrixUniform(shaderProgram, "camMatrix");
 
+		//texture.Bind();
+		//specular.Bind();
+		VAO1.Bind();
+
+		const int indexCount = sizeof(indicesPyramidLighting) / sizeof(int);
+		//GLCall(glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, 0));
+
 		// setup for rendering the light cube
 		lightShader.Bind();
 		camera.MatrixUniform(lightShader, "camMatrix");
 		lightVAO.Bind();
 
-		const int indexCountLight = sizeof(cubeIndices) / sizeof(int);
+		const int indexCountLight = sizeof(lightIndices) / sizeof(int);
 		GLCall(glDrawElements(GL_TRIANGLES, indexCountLight, GL_UNSIGNED_INT, 0));
 
 		//quadShader.Activate();
@@ -377,10 +524,15 @@ int main()
 		// handle window events
 		glfwPollEvents();
 
-		ExitOnEsc(window);
+		// ExitOnEsc(window);
 	}
 
 	// Deleting the abstracted GPU objects
+	VAO1.Delete();
+	VBO1.Delete();
+	EBO1.Delete();
+	//texture.Delete();
+	//specular.Delete();
 	shaderProgram.Delete();
 
 	lightVAO.Delete();
