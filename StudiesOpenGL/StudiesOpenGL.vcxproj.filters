@@ -156,5 +156,8 @@
     <Image Include="PebblesTileSpecular.png">
       <Filter>Resource Files\Textures</Filter>
     </Image>
+    <Image Include="KristerSphere.png">
+      <Filter>Resource Files\Textures</Filter>
+    </Image>
   </ItemGroup>
 </Project>

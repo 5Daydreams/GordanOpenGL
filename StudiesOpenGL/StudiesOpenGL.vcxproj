@@ -207,6 +207,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="Ghost_Alvin_512.png" />
+    <Image Include="KristerSphere.png" />
     <Image Include="PebblesTile.png" />
     <Image Include="PebblesTileSpecular.png" />
   </ItemGroup>

@@ -124,7 +124,7 @@ int main()
 #pragma region mainObject shader and VAO
 
 	// Loading model
-	std::string pathString = "Models/starship.fbx";
+	std::string pathString = "Models/suzanne.fbx";
 
 	Model model = Model(pathString);
 
@@ -196,7 +196,7 @@ int main()
 	glm::vec3 lightColor = lightDiffuse;
 
 	glm::vec3 lightPos = glm::vec3(1.0f, 1.5f, 1.0f);
-	glm::vec3 lightScale = glm::vec3(0.1f,0.1f,0.1f);
+	glm::vec3 lightScale = glm::vec3(0.05f,0.05f,0.05f);
 	glm::mat4 lightModelMatrix = glm::mat4(1.0f);
 	lightModelMatrix = glm::scale(lightModelMatrix, lightScale);
 	lightModelMatrix = glm::translate(lightModelMatrix, lightPos);
@@ -226,14 +226,14 @@ int main()
 		glm::vec3 spotlightDir = glm::vec3(-1.0f, -1.0f, -1.0f);
 		shaderProgram.setVec3("spotlight.spotDirection", spotlightDir);
 
-		GLfloat innerCutoffValue = glm::cos(glm::radians(20.0f));
-		GLfloat outerCutoffValue = glm::cos(glm::radians(45.0f));
+		GLfloat innerCutoffValue = glm::cos(glm::radians(30.0f));
+		GLfloat outerCutoffValue = glm::cos(glm::radians(60.0f));
 
 		shaderProgram.setFloat("spotlight.innerCutoff", innerCutoffValue);
 		shaderProgram.setFloat("spotlight.outerCutoff", outerCutoffValue);
 
-		shaderProgram.setFloat("spotlight.linearFalloff", 0.03f);
-		shaderProgram.setFloat("spotlight.quadraticFalloff", 0.05f);
+		shaderProgram.setFloat("spotlight.linearFalloff", 0.003f);
+		shaderProgram.setFloat("spotlight.quadraticFalloff", 0.005f);
 	}
 
 #pragma endregion
@@ -248,6 +248,10 @@ int main()
 	shaderProgram.setVec3("material.diffuse", glm::vec3(0.3f, 0.5f, 0.8f));
 	shaderProgram.setVec3("material.specular", glm::vec3(0.1f, 0.1f, 0.1f));
 
+	Texture texture("KristerSphere.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
+	texture.texUnit(shaderProgram, "texture_diffuse1", 0);
+
+
 #pragma endregion
 
 	while (!glfwWindowShouldClose(window))
@@ -256,9 +260,9 @@ int main()
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		lightShader.Bind();
-		lightPos.x = 0.0f + 2.0f * (float)sin(glfwGetTime());
-		lightPos.z = 0.0f + 2.0f * (float)cos(glfwGetTime());
-		lightPos.y = 1.0f + 0.0f * (float)cos(glfwGetTime());
+		lightPos.x = 0.0f + 1.0f * (float)sin(glfwGetTime());
+		lightPos.z = 0.0f + 1.0f * (float)cos(glfwGetTime());
+		lightPos.y = 1.5f + 0.0f * (float)cos(glfwGetTime());
 		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightPos);
 		lightModelMatrix = glm::scale(lightModelMatrix, lightScale);
 		lightShader.setMat4("model", lightModelMatrix);
@@ -269,6 +273,7 @@ int main()
 
 		// setup for rendering the main object
 		shaderProgram.Bind();
+		texture.Bind();
 		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(0.3f, 0.3f, 0.3f));
 		shaderProgram.setMat4("model", mainObjectMatrix);
@@ -310,6 +315,7 @@ int main()
 
  	// Deleting the abstracted GPU objects
 	shaderProgram.Delete();
+	texture.Delete();
 
 	lightVAO.Delete();
 	lightVBO.Delete();

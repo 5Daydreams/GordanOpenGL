@@ -10,7 +10,7 @@ in vec3 Normal;
 
 // uniforms represent the _same value_ for all fragments within a shader instace, 
 // hard-push to use "uniform" instead of "varying" variables, as those can take up significantly more time to process
-//uniform sampler2D tex0;
+uniform sampler2D texture_diffuse1;
 //uniform sampler2D tex1;
 
 struct Material {
@@ -68,11 +68,11 @@ void main()
     float dist = length(spotlight.position - FragPos);
     float attenuation = 1.0f / (1.0f + spotlight.linearFalloff * dist + spotlight.quadraticFalloff * (dist * dist));    
 
-//	vec4 texColor = texture(tex0, texCoord); // (!) Removed temporarily for flat surface debugging
+	vec4 texColor = vec4(1.0f,0.1f,0.8f,1.0f);// texture(texture_diffuse1, 5*texCoord); // (!) Removed temporarily for flat surface debugging
 
 	// ambient light is assumed to be full white always
-	vec3 ambientColor  = spotlight.ambient * material.ambient; // * texColor.xyz; 
-	vec3 diffuseColor  = spotlight.diffuse * diffuse * material.diffuse; // * texColor.xyz;
+	vec3 ambientColor  = spotlight.ambient * material.ambient * texColor.xyz; 
+	vec3 diffuseColor  = spotlight.diffuse * diffuse * material.diffuse * texColor.xyz;
 	vec3 specularColor = spotlight.specular * specular * material.specular;
 
 	vec3 result = (ambientColor + diffuseColor + specularColor) * attenuation;
