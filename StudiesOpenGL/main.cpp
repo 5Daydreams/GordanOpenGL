@@ -251,6 +251,7 @@ int main()
 	Texture texture("KristerSphere.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
 	texture.texUnit(shaderProgram, "texture_diffuse1", 0);
 
+	float rot = 0.0f;
 
 #pragma endregion
 
@@ -275,8 +276,11 @@ int main()
 		shaderProgram.Bind();
 		texture.Bind();
 		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		mainObjectMatrix = glm::rotate(mainObjectMatrix, rot, glm::vec3(0.0, 1.0, 1.0));
 		mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(0.3f, 0.3f, 0.3f));
 		shaderProgram.setMat4("model", mainObjectMatrix);
+
+		rot += 0.03f;
 
 		// Regularly drawing the object 
 		model.Draw(shaderProgram);
