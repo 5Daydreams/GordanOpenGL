@@ -134,7 +134,7 @@ int main()
 	quadVAO.LinkAttrib(quadVBO, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
 	//const VAO& VArrayObject, const EBO& IndexBufferObject, const Shader& shader
-	Renderer quadRenderer();
+	Renderer quadRenderer(quadVAO, quadEBO);
 
 #pragma endregion
 
@@ -153,7 +153,7 @@ int main()
 
 	cubeVAO.LinkAttrib(cubeVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
 
-	Renderer cubeRenderer(cubeVAO,);
+	Renderer cubeRenderer(cubeVAO, );
 
 	cubeVAO.Unbind();
 	cubeVBO.Unbind();
@@ -215,7 +215,7 @@ int main()
 	glm::vec3 lightColor = lightDiffuse;
 
 	glm::vec3 lightPos = glm::vec3(1.0f, 1.5f, 1.0f);
-	glm::vec3 lightScale = glm::vec3(0.05f,0.05f,0.05f);
+	glm::vec3 lightScale = glm::vec3(0.05f, 0.05f, 0.05f);
 	glm::mat4 lightModelMatrix = glm::mat4(1.0f);
 	lightModelMatrix = glm::scale(lightModelMatrix, lightScale);
 	lightModelMatrix = glm::translate(lightModelMatrix, lightPos);
@@ -234,7 +234,7 @@ int main()
 	glm::mat4 mainObjectMatrix = glm::mat4(1.0f);
 	mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(1.0f, 1.0f, 1.0f));
 	mainObjectMatrix = glm::translate(mainObjectMatrix, mainObjectPos);
-	
+
 	shaderProgram.Bind();
 	shaderProgram.setMat4("model", mainObjectMatrix);
 	shaderProgram.setFloat("material.shininess", 32.0f);
@@ -312,11 +312,11 @@ int main()
 		shaderProgram.Bind();
 		// Passing the camera position vector as a uniform to the object's shader file
 		shaderProgram.setVec3("spotlight.position", lightPos.x, lightPos.y, lightPos.z);
-		
+
 		glm::vec3 spotlightDir = mainObjectPos - lightPos;
 		shaderProgram.setVec3("spotlight.spotDirection", spotlightDir);
 		shaderProgram.setVec3("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
-		
+
 		// Passing the camera model * projection matrix as a uniform to the object's shader file
 		camera.MatrixUniform(shaderProgram, "camMatrix");
 
@@ -336,7 +336,7 @@ int main()
 		ExitOnEsc(window);
 	}
 
- 	// Deleting the abstracted GPU objects
+	// Deleting the abstracted GPU objects
 	shaderProgram.Delete();
 	texture.Delete();
 
