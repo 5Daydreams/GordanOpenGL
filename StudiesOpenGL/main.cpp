@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "Model.h"
 #include "ModelBuilder.h"
+#include "Renderer.h"
 
 #pragma region quadMesh
 
@@ -121,6 +122,22 @@ int main()
 
 #pragma endregion
 
+#pragma region Initializing Basic Renderers
+
+	VAO quadVAO;
+	quadVAO.Bind();
+
+	VBO quadVBO(quadVertices, sizeof(quadVertices));
+	EBO quadEBO(quadIndices, sizeof(quadIndices));
+
+	quadVAO.LinkAttrib(quadVBO, 0, 3, GL_FLOAT, 5 * sizeof(float), (void*)0);
+	quadVAO.LinkAttrib(quadVBO, 1, 2, GL_FLOAT, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+	//const VAO& VArrayObject, const EBO& IndexBufferObject, const Shader& shader
+	Renderer quadRenderer();
+
+#pragma endregion
+
 #pragma region mainObject shader and VAO
 
 	// Loading model
@@ -135,6 +152,8 @@ int main()
 	EBO cubeEBO(cubeIndices, sizeof(cubeIndices));
 
 	cubeVAO.LinkAttrib(cubeVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
+
+	Renderer cubeRenderer(cubeVAO,);
 
 	cubeVAO.Unbind();
 	cubeVBO.Unbind();

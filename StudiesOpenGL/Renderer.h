@@ -8,6 +8,10 @@
 class Renderer
 {
 public:
-    void Draw(const VAO& va, const EBO& ib, const Shader& shader) const;
+    const VAO& VArrayObject; 
+    const EBO& IndexBufferObject;
+
+    Renderer(const VAO& va, const EBO& ib);
+    void Draw(const Shader& shader) const;
     void Clear() const;
 };
