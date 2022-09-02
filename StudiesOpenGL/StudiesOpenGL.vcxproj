@@ -189,6 +189,7 @@
     <None Include="spotlight.frag" />
     <None Include="stencilOutline.frag" />
     <None Include="stencilOutline.vert" />
+    <None Include="toonLightTexture.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EBO.h" />
@@ -210,6 +211,7 @@
     <Image Include="KristerSphere.png" />
     <Image Include="PebblesTile.png" />
     <Image Include="PebblesTileSpecular.png" />
+    <Image Include="starfield.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

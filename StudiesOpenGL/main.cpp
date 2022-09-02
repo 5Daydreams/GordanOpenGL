@@ -153,14 +153,12 @@ int main()
 
 	cubeVAO.LinkAttrib(cubeVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
 
-	Renderer cubeRenderer(cubeVAO, );
-
 	cubeVAO.Unbind();
 	cubeVBO.Unbind();
 	cubeEBO.Unbind();
 
 	// Generates Shader object using defualt.vert and default.frag shaders
-	Shader shaderProgram("default.vert", "spotlight.frag");
+	Shader shaderProgram("default.vert", "toonLightTexture.frag");
 
 #pragma endregion
 
@@ -209,10 +207,7 @@ int main()
 #pragma region light object setup
 
 	// Preparing Light Coloring
-	glm::vec3 lightSpecular = glm::vec3(1.0f, 1.0f, 1.0f);
-	glm::vec3 lightDiffuse = glm::vec3(0.5f, 0.5f, 0.5f);
-	glm::vec3 lightAmbient = glm::vec3(0.2f, 0.2f, 0.2f);
-	glm::vec3 lightColor = lightDiffuse;
+	glm::vec3 lightColor = glm::vec3(0.1f, 0.5f, 0.8f);
 
 	glm::vec3 lightPos = glm::vec3(1.0f, 1.5f, 1.0f);
 	glm::vec3 lightScale = glm::vec3(0.05f, 0.05f, 0.05f);
@@ -237,40 +232,17 @@ int main()
 
 	shaderProgram.Bind();
 	shaderProgram.setMat4("model", mainObjectMatrix);
-	shaderProgram.setFloat("material.shininess", 32.0f);
 
-	if (true) // spotlight setup
-	{
-		shaderProgram.setVec3("spotlight.position", lightPos);
-		glm::vec3 spotlightDir = glm::vec3(-1.0f, -1.0f, -1.0f);
-		shaderProgram.setVec3("spotlight.spotDirection", spotlightDir);
+	glm::vec3 lightDir = glm::vec3(-1.0f, -1.0f, -1.0f);
+	shaderProgram.setVec3("dirLight.lightDir", lightDir);
+	shaderProgram.setVec3("dirLight.lightColor", lightColor);
+	shaderProgram.setVec2("renderTargetSize", SCREEN_WIDTH,SCREEN_HEIGHT);
 
-		GLfloat innerCutoffValue = glm::cos(glm::radians(30.0f));
-		GLfloat outerCutoffValue = glm::cos(glm::radians(60.0f));
-
-		shaderProgram.setFloat("spotlight.innerCutoff", innerCutoffValue);
-		shaderProgram.setFloat("spotlight.outerCutoff", outerCutoffValue);
-
-		shaderProgram.setFloat("spotlight.linearFalloff", 0.003f);
-		shaderProgram.setFloat("spotlight.quadraticFalloff", 0.005f);
-	}
-
-#pragma endregion
-
-#pragma region shader setups (main object)
-
-	shaderProgram.setVec3("spotlight.ambient", lightAmbient);
-	shaderProgram.setVec3("spotlight.diffuse", lightDiffuse);
-	shaderProgram.setVec3("spotlight.specular", lightSpecular);
-
-	shaderProgram.setVec3("material.ambient", glm::vec3(1.0f, 1.0f, 1.0f));
-	shaderProgram.setVec3("material.diffuse", glm::vec3(0.3f, 0.5f, 0.8f));
-	shaderProgram.setVec3("material.specular", glm::vec3(0.1f, 0.1f, 0.1f));
-
-	Texture texture("KristerSphere.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	texture.texUnit(shaderProgram, "texture_diffuse1", 0);
+	Texture texture("starfield.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
+	texture.texUnit(shaderProgram, "blendTexture", 0);
 
 	float rot = 0.0f;
+	float time = 0.0f;
 
 #pragma endregion
 
@@ -298,8 +270,10 @@ int main()
 		mainObjectMatrix = glm::rotate(mainObjectMatrix, rot, glm::vec3(0.0, 1.0, 1.0));
 		mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(0.3f, 0.3f, 0.3f));
 		shaderProgram.setMat4("model", mainObjectMatrix);
+		shaderProgram.setFloat("time", time);
 
 		rot += 0.03f;
+		time += 0.005f;
 
 		// Regularly drawing the object 
 		model.Draw(shaderProgram);
@@ -311,11 +285,9 @@ int main()
 
 		shaderProgram.Bind();
 		// Passing the camera position vector as a uniform to the object's shader file
-		shaderProgram.setVec3("spotlight.position", lightPos.x, lightPos.y, lightPos.z);
-
 		glm::vec3 spotlightDir = mainObjectPos - lightPos;
-		shaderProgram.setVec3("spotlight.spotDirection", spotlightDir);
-		shaderProgram.setVec3("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
+		shaderProgram.setVec3("dirLight.lightDir", spotlightDir);
+		//shaderProgram.setVec3("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
 
 		// Passing the camera model * projection matrix as a uniform to the object's shader file
 		camera.MatrixUniform(shaderProgram, "camMatrix");
