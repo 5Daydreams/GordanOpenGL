@@ -266,6 +266,8 @@ int main()
 		// setup for rendering the main object
 		shaderProgram.Bind();
 		texture.Bind();
+		shaderProgram.setVec3("camPos", camera.Position);
+		shaderProgram.setVec3("centerPos", glm::vec3(0.0f, 1.0f, 0.0f));
 		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 		mainObjectMatrix = glm::rotate(mainObjectMatrix, rot, glm::vec3(0.0, 1.0, 1.0));
 		mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(0.3f, 0.3f, 0.3f));
@@ -273,7 +275,7 @@ int main()
 		shaderProgram.setFloat("time", time);
 
 		rot += 0.03f;
-		time += 0.005f;
+		time += 0.002f;
 
 		// Regularly drawing the object 
 		model.Draw(shaderProgram);

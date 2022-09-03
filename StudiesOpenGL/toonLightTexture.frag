@@ -7,7 +7,9 @@ out vec4 FragColor;
 in vec2 texCoord;
 in vec3 Normal;
 in vec3 FragPos;
-in vec4 clipPos;
+
+uniform vec3 centerPos;
+uniform vec3 camPos;
 
 // Not the cleanest way, but this struct stores the lightcolor data from a single directional light source.
 // Something to handle later will be handling multiple light sources
@@ -33,12 +35,15 @@ void main()
 	float satFalloff = max(dirLightFalloff,0.0f);
 
 	vec2 screenUV = (gl_FragCoord.xy / renderTargetSize.xy);
-	screenUV.y += time;
 
 	float normalizedLightFalloff = (dirLightFalloff + 1.0f)*0.5f;
 
+	float textureDistScaling = distance(camPos,centerPos);
+	
+	screenUV.y += time/textureDistScaling;
+
 	// The multiplication is carried out here to block "false light" hitting the bottom of the mesh
-	float noiseTextureValue = texture(blendTexture, 2.5 * screenUV).r * normalizedLightFalloff;
+	float noiseTextureValue = texture(blendTexture, 3.0* textureDistScaling * screenUV).r * normalizedLightFalloff;
 
 	float thing = highlightThreshold + shadeThreshold;
 

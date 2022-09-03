@@ -9,7 +9,6 @@ layout (location = 2) in vec2 aTex;
 out vec3 FragPos;
 out vec3 Normal;
 out vec2 texCoord;
-out vec4 clipPos;
 
 // Uniforms are values to be set during the application's runtime (either on startup or loop)
 uniform mat4 camMatrix;
@@ -26,5 +25,4 @@ void main()
 	// Notice the subtle distinction - the FragPos variable is going to be used for calculating lighting, 
 	// therefore it has to be in regular world space, while this one is where "from the camera's perspective" the object will be
 	gl_Position = camMatrix * vec4(FragPos, 1.0);
-	clipPos = gl_Position;
 }
