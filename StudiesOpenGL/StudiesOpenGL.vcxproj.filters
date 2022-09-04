@@ -65,12 +65,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="default.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="default.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
     <None Include="light.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
@@ -83,9 +77,6 @@
     <None Include="quadUV.vert">
       <Filter>Resource Files\Shaders</Filter>
     </None>
-    <None Include="directionalLight.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
     <None Include="pointLight.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
@@ -93,9 +84,6 @@
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="multiLight.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="depthBuffer.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
     <None Include="stencilOutline.frag">
@@ -107,6 +95,20 @@
     <None Include="toonLightTexture.frag">
       <Filter>Resource Files\Shaders</Filter>
     </None>
+    <None Include="Shaders\default.frag" />
+    <None Include="Shaders\default.vert" />
+    <None Include="Shaders\depthBuffer.frag" />
+    <None Include="Shaders\directionalLight.frag" />
+    <None Include="Shaders\light.frag" />
+    <None Include="Shaders\light.vert" />
+    <None Include="Shaders\multiLight.frag" />
+    <None Include="Shaders\pointLight.frag" />
+    <None Include="Shaders\quadUV.frag" />
+    <None Include="Shaders\quadUV.vert" />
+    <None Include="Shaders\spotlight.frag" />
+    <None Include="Shaders\stencilOutline.frag" />
+    <None Include="Shaders\stencilOutline.vert" />
+    <None Include="Shaders\toonLightTexture.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shaderClass.h">

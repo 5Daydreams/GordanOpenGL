@@ -176,16 +176,26 @@
     <ClCompile Include="VBO.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="default.frag" />
-    <None Include="default.vert" />
-    <None Include="depthBuffer.frag" />
-    <None Include="directionalLight.frag" />
     <None Include="light.frag" />
     <None Include="light.vert" />
     <None Include="multiLight.frag" />
     <None Include="pointLight.frag" />
     <None Include="quadUV.frag" />
     <None Include="quadUV.vert" />
+    <None Include="Shaders\default.frag" />
+    <None Include="Shaders\default.vert" />
+    <None Include="Shaders\depthBuffer.frag" />
+    <None Include="Shaders\directionalLight.frag" />
+    <None Include="Shaders\light.frag" />
+    <None Include="Shaders\light.vert" />
+    <None Include="Shaders\multiLight.frag" />
+    <None Include="Shaders\pointLight.frag" />
+    <None Include="Shaders\quadUV.frag" />
+    <None Include="Shaders\quadUV.vert" />
+    <None Include="Shaders\spotlight.frag" />
+    <None Include="Shaders\stencilOutline.frag" />
+    <None Include="Shaders\stencilOutline.vert" />
+    <None Include="Shaders\toonLightTexture.frag" />
     <None Include="spotlight.frag" />
     <None Include="stencilOutline.frag" />
     <None Include="stencilOutline.vert" />
