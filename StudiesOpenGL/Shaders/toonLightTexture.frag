@@ -25,6 +25,12 @@ uniform sampler2D blendTexture;
 
 uniform float highlightThreshold;
 uniform float shadeThreshold;
+uniform float textureEffect;
+
+uniform vec3 highlightColor;
+uniform vec3 keyColor;
+uniform vec3 shadeColor;
+
 uniform float time;
 uniform vec2 renderTargetSize;
 
@@ -36,16 +42,27 @@ void main()
 
 	vec2 screenUV = (gl_FragCoord.xy / renderTargetSize.xy);
 
-	float normalizedLightFalloff = (dirLightFalloff + 1.0f)*0.5f;
-
 	float textureDistScaling = distance(camPos,centerPos);
 	
 	screenUV.y += time/textureDistScaling;
 
+	float noiseTextureValue = texture(blendTexture, 3.0* textureDistScaling * screenUV).r * 2.0f - 1.0f;
+
+	float normalizedLightFalloff = (dirLightFalloff + 1.0f)*0.5f;
+
 	// The multiplication is carried out here to block "false light" hitting the bottom of the mesh
-	float noiseTextureValue = texture(blendTexture, 3.0* textureDistScaling * screenUV).r * normalizedLightFalloff;
+	float lightValue = (textureEffect * noiseTextureValue * normalizedLightFalloff) + satFalloff;
 
-	float thing = highlightThreshold + shadeThreshold;
+	vec3 finalColor = keyColor;
 
-	FragColor = vec4( (noiseTextureValue + satFalloff) * dirLight.lightColor, 1.0f) + thing * 0.0f;
+	if(lightValue >= highlightThreshold)
+	{
+		finalColor = highlightColor;
+	}
+	else if (lightValue < shadeThreshold)
+	{
+		finalColor = shadeColor;
+	}
+
+	FragColor = vec4(finalColor * dirLight.lightColor, 1.0f);
 }

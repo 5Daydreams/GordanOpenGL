@@ -207,7 +207,7 @@ int main()
 #pragma region light object setup
 
 	// Preparing Light Coloring
-	glm::vec3 lightColor = glm::vec3(0.1f, 0.5f, 0.8f);
+	glm::vec3 lightColor = glm::vec3(0.8f, 0.3f, 0.95f);
 
 	glm::vec3 lightPos = glm::vec3(1.0f, 1.5f, 1.0f);
 	glm::vec3 lightScale = glm::vec3(0.05f, 0.05f, 0.05f);
@@ -236,6 +236,29 @@ int main()
 	glm::vec3 lightDir = glm::vec3(-1.0f, -1.0f, -1.0f);
 	shaderProgram.setVec3("dirLight.lightDir", lightDir);
 	shaderProgram.setVec3("dirLight.lightColor", lightColor);
+	
+	float highlightThreshold = 0.95f;
+	float shadeThreshold = 0.1f;
+	float textureEffect = 0.3f;
+
+	shaderProgram.setFloat("highlightThreshold", highlightThreshold);
+	shaderProgram.setFloat("shadeThreshold", shadeThreshold);
+	shaderProgram.setFloat("textureEffect", textureEffect);
+
+	// cyan tint
+	//glm::vec3 highlightColor = glm::vec3(0.1f, 0.8f, 0.9f);
+	//glm::vec3 keyColor = glm::vec3(0.1f, 0.5f, 0.8f);
+	//glm::vec3 shadeColor = glm::vec3(0.0f, 0.3f, 0.4f);
+
+	// red tint
+	glm::vec3 highlightColor = glm::vec3(0.95f, 0.1f, 0.2f);
+	glm::vec3 keyColor = glm::vec3(0.6f, 0.0f, 0.1f);
+	glm::vec3 shadeColor = glm::vec3(0.3f, 0.0f, 0.05f);
+
+	shaderProgram.setVec3("highlightColor", highlightColor);
+	shaderProgram.setVec3("keyColor", keyColor);
+	shaderProgram.setVec3("shadeColor", shadeColor);
+
 	shaderProgram.setVec2("renderTargetSize", SCREEN_WIDTH,SCREEN_HEIGHT);
 
 	Texture texture("starfield.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
@@ -274,8 +297,8 @@ int main()
 		shaderProgram.setMat4("model", mainObjectMatrix);
 		shaderProgram.setFloat("time", time);
 
-		rot += 0.03f;
-		time += 0.002f;
+		rot += 0.01f;
+		time += 0.001f;
 
 		// Regularly drawing the object 
 		model.Draw(shaderProgram);

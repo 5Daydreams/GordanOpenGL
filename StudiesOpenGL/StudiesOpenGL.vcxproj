@@ -186,8 +186,10 @@
     <None Include="Shaders\default.vert" />
     <None Include="Shaders\depthBuffer.frag" />
     <None Include="Shaders\directionalLight.frag" />
+    <None Include="Shaders\importTest.frag" />
     <None Include="Shaders\light.frag" />
     <None Include="Shaders\light.vert" />
+    <None Include="Shaders\lightMethods.glsl" />
     <None Include="Shaders\multiLight.frag" />
     <None Include="Shaders\pointLight.frag" />
     <None Include="Shaders\quadUV.frag" />
