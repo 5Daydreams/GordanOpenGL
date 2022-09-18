@@ -145,19 +145,7 @@ int main()
 
 	Model model = Model(pathString);
 
-	//VAO cubeVAO;
-	//cubeVAO.Bind();
-
-	//VBO cubeVBO(cubeVertices, sizeof(cubeVertices));
-	//EBO cubeEBO(cubeIndices, sizeof(cubeIndices));
-
-	//cubeVAO.LinkAttrib(cubeVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
-
-	//cubeVAO.Unbind();
-	//cubeVBO.Unbind();
-	//cubeEBO.Unbind();
-
-	// Generates Shader object using defualt.vert and default.frag shaders
+	// Generates Shader object using vert and frag shaders
 	Shader shaderProgram("default.vert", "defaultPBR.frag");
 
 #pragma endregion

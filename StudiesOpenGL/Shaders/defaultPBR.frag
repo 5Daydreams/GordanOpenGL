@@ -112,7 +112,10 @@ void main()
         float attenuation = 1.0 / (dist* dist);
         vec3 radiance = light.color * attenuation;
 
-        // Cook-Torrance BRDF
+        // the specular BRDF numerator contains the Microfacet Statistical Distributions for:
+        // NDF -- Normal directions (affects the result of h = (V+L).norm() )
+        // G -- Geometrical self-shadowing
+        // F -- Fresnel reflections
         float NDF = DistributionGGX(N, H, roughness);   
         float G   = GeometrySmith(N, V, L, roughness);      
         vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
