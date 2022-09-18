@@ -10,7 +10,7 @@
 class Texture
 {
 public:
-	unsigned char* m_LocalBuffer;
+	//unsigned char* m_LocalBuffer;
 	GLuint ID;
 	GLenum type;
 	GLuint unit;

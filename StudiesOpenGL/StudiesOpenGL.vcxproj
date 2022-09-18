@@ -176,14 +176,9 @@
     <ClCompile Include="VBO.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="light.frag" />
-    <None Include="light.vert" />
-    <None Include="multiLight.frag" />
-    <None Include="pointLight.frag" />
-    <None Include="quadUV.frag" />
-    <None Include="quadUV.vert" />
     <None Include="Shaders\default.frag" />
     <None Include="Shaders\default.vert" />
+    <None Include="Shaders\defaultPBR.frag" />
     <None Include="Shaders\depthBuffer.frag" />
     <None Include="Shaders\directionalLight.frag" />
     <None Include="Shaders\importTest.frag" />
@@ -198,10 +193,6 @@
     <None Include="Shaders\stencilOutline.frag" />
     <None Include="Shaders\stencilOutline.vert" />
     <None Include="Shaders\toonLightTexture.frag" />
-    <None Include="spotlight.frag" />
-    <None Include="stencilOutline.frag" />
-    <None Include="stencilOutline.vert" />
-    <None Include="toonLightTexture.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EBO.h" />
@@ -219,10 +210,14 @@
     <ClInclude Include="VBO.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="BaseNormals.png" />
+    <Image Include="FullBlack.png" />
+    <Image Include="FullWhite.png" />
     <Image Include="Ghost_Alvin_512.png" />
     <Image Include="KristerSphere.png" />
     <Image Include="PebblesTile.png" />
     <Image Include="PebblesTileSpecular.png" />
+    <Image Include="Red_flat.png" />
     <Image Include="starfield.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

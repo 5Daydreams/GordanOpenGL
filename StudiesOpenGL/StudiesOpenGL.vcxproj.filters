@@ -65,36 +65,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="light.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="light.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="quadUV.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="quadUV.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="pointLight.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="spotlight.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="multiLight.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="stencilOutline.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="stencilOutline.vert">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
-    <None Include="toonLightTexture.frag">
-      <Filter>Resource Files\Shaders</Filter>
-    </None>
     <None Include="Shaders\default.frag" />
     <None Include="Shaders\default.vert" />
     <None Include="Shaders\depthBuffer.frag" />
@@ -111,6 +81,7 @@
     <None Include="Shaders\toonLightTexture.frag" />
     <None Include="Shaders\lightMethods.glsl" />
     <None Include="Shaders\importTest.frag" />
+    <None Include="Shaders\defaultPBR.frag" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shaderClass.h">
@@ -168,6 +139,18 @@
     </Image>
     <Image Include="starfield.png">
       <Filter>Resource Files\Textures</Filter>
+    </Image>
+    <Image Include="Red_flat.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="FullWhite.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="FullBlack.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="BaseNormals.png">
+      <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
 </Project>
