@@ -110,6 +110,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)x64\Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -135,6 +136,29 @@
     <ProjectReference Include="..\StudiesOpenGL\StudiesOpenGL.vcxproj">
       <Project>{bf22ee4d-a85b-47df-9f01-4b2c929f0247}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Models\cube.fbx" />
+    <None Include="Models\sphere.fbx" />
+    <None Include="Models\starship.fbx" />
+    <None Include="Models\Suzanne.fbx" />
+    <None Include="x64\Debug\vc143.idb" />
+    <None Include="x64\Debug\vc143.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="x64\Debug\assimp-vc142-mtd.lib" />
+    <Library Include="x64\Debug\glfw3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\BaseNormals.png" />
+    <Image Include="Textures\FullBlack.png" />
+    <Image Include="Textures\FullWhite.png" />
+    <Image Include="Textures\Ghost_Alvin_512.png" />
+    <Image Include="Textures\KristerSphere.png" />
+    <Image Include="Textures\PebblesTile.png" />
+    <Image Include="Textures\PebblesTileSpecular.png" />
+    <Image Include="Textures\Red_flat.png" />
+    <Image Include="Textures\starfield.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

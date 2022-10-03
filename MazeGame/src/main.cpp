@@ -1,11 +1,12 @@
-#include <iostream>
-#include <filesystem>
-#include <glad/glad.h>
+#include "glad/glad.h"
+
 #include <GLFW/glfw3.h>
 #include <stb/stb_image.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <iostream>
+#include <filesystem>
 
 #include "Texture.h"
 #include "shaderClass.h"
@@ -76,7 +77,7 @@ void ExitOnEsc(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 }
 
-int renderingMain()
+int main()
 {
 #pragma region window and camera setup
 
@@ -141,7 +142,7 @@ int renderingMain()
 #pragma region mainObject shader and VAO
 
 	// Loading model
-	std::string pathString = "Models/Suzanne.fbx";
+	std::string pathString = "Models/sphere.fbx";
 
 	Model model = Model(pathString);
 
@@ -224,19 +225,19 @@ int renderingMain()
 	shaderProgram.setVec3("light.position", lightCubePos);
 	shaderProgram.setVec3("light.color", lightColor);
 
-	Texture albedo("Red_flat.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture albedo("Textures/Red_flat.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
 	albedo.texUnit(shaderProgram, "albedo", 0);
 
-	Texture normals("BaseNormals.png", GL_TEXTURE_2D, 1, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture normals("Textures/BaseNormals.png", GL_TEXTURE_2D, 1, GL_RGB, GL_UNSIGNED_BYTE);
 	normals.texUnit(shaderProgram, "normalMap", 1);
 	
-	Texture metallic("FullBlack.png", GL_TEXTURE_2D, 2, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture metallic("Textures/FullBlack.png", GL_TEXTURE_2D, 2, GL_RGB, GL_UNSIGNED_BYTE);
 	metallic.texUnit(shaderProgram, "metallic", 2);
 
-	Texture roughness("FullWhite.png", GL_TEXTURE_2D, 3, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture roughness("Textures/FullWhite.png", GL_TEXTURE_2D, 3, GL_RGB, GL_UNSIGNED_BYTE);
 	roughness.texUnit(shaderProgram, "roughness", 3);
 
-	Texture ao("FullWhite.png", GL_TEXTURE_2D, 4, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture ao("Textures/FullWhite.png", GL_TEXTURE_2D, 4, GL_RGB, GL_UNSIGNED_BYTE);
 	ao.texUnit(shaderProgram, "ao", 4);
 
 	float rot = 0.0f;
