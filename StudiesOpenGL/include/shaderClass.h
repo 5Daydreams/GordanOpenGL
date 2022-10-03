@@ -1,15 +1,14 @@
 #ifndef SHADER_CLASS_H
 #define SHADER_CLASS_H
 
-#include <glad/glad.h>
+#include "GLMacros.h"
+
 #include <glm/glm.hpp>
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <cerrno>
-
-#include "GLMacros.h"
 
 std::string get_file_contents(const char* filename);
 

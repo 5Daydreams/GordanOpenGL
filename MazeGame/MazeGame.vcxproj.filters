@@ -15,8 +15,49 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="x64\Debug\vc143.pdb" />
+    <None Include="x64\Debug\vc143.idb" />
+    <None Include="Models\cube.fbx" />
+    <None Include="Models\sphere.fbx" />
+    <None Include="Models\starship.fbx" />
+    <None Include="Models\Suzanne.fbx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="x64\Debug\glfw3.lib" />
+    <Library Include="x64\Debug\assimp-vc142-mtd.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Textures\BaseNormals.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\FullBlack.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\FullWhite.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\Ghost_Alvin_512.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\KristerSphere.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\PebblesTile.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\PebblesTileSpecular.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\Red_flat.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Textures\starfield.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
