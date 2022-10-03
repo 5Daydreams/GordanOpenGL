@@ -76,7 +76,7 @@ void ExitOnEsc(GLFWwindow* window)
 		glfwSetWindowShouldClose(window, true);
 }
 
-int main()
+int renderingMain()
 {
 #pragma region window and camera setup
 
