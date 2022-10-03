@@ -82,6 +82,10 @@
     <None Include="Shaders\lightMethods.glsl" />
     <None Include="Shaders\importTest.frag" />
     <None Include="Shaders\defaultPBR.frag" />
+    <None Include="Shaders\worldSpaceVertexDisplacement.vert" />
+    <None Include="Shaders\PBR_test.frag">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shaderClass.h">

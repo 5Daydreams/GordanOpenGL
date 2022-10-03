@@ -118,7 +118,7 @@ int main()
 	GLCall(glEnable(GL_DEPTH_TEST));
 	GLCall(glDepthFunc(GL_LESS));
 
-	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.3f, 3.0f));
+	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.0f, 1.8f));
 
 #pragma endregion
 
@@ -141,12 +141,12 @@ int main()
 #pragma region mainObject shader and VAO
 
 	// Loading model
-	std::string pathString = "Models/sphere.fbx";
+	std::string pathString = "Models/Suzanne.fbx";
 
 	Model model = Model(pathString);
 
 	// Generates Shader object using vert and frag shaders
-	Shader shaderProgram("default.vert", "defaultPBR.frag");
+	Shader shaderProgram("default.vert", "PBR_test.frag");
 
 #pragma endregion
 
@@ -236,10 +236,11 @@ int main()
 	Texture roughness("FullWhite.png", GL_TEXTURE_2D, 3, GL_RGB, GL_UNSIGNED_BYTE);
 	roughness.texUnit(shaderProgram, "roughness", 3);
 
-	Texture ao("FullBlack.png", GL_TEXTURE_2D, 4, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture ao("FullWhite.png", GL_TEXTURE_2D, 4, GL_RGB, GL_UNSIGNED_BYTE);
 	ao.texUnit(shaderProgram, "ao", 4);
 
 	float rot = 0.0f;
+	float time = 0.0f;
 
 #pragma endregion
 
@@ -251,7 +252,7 @@ int main()
 		lightShader.Bind();
 		lightCubePos.x = 0.0f + 0.5f * (float)sin(glfwGetTime());
 		lightCubePos.z = 0.0f + 0.5f * (float)cos(glfwGetTime());
-		lightCubePos.y = 1.5f + 0.0f * (float)cos(glfwGetTime());
+		lightCubePos.y = 0.5f + 0.0f * (float)cos(glfwGetTime());
 		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightCubePos);
 		lightModelMatrix = glm::scale(lightModelMatrix, lightCubeScale);
 		lightShader.setMat4("model", lightModelMatrix);
@@ -269,14 +270,16 @@ int main()
 		ao.Bind();
 
 		shaderProgram.setVec3("camPos", camera.Position);
-		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		mainObjectMatrix = glm::translate(glm::mat4(1.0f), mainObjectPos);
 		mainObjectMatrix = glm::rotate(mainObjectMatrix, rot, glm::vec3(0.0, 1.0, 1.0));
 		mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(0.3f, 0.3f, 0.3f));
 		shaderProgram.setMat4("model", mainObjectMatrix);
 
 		//rot += 0.01f;
+		time += 0.01f;
 
 		// Passing the camera position vector as a uniform to the object's shader file
+		// shaderProgram.setFloat("time", time);
 		shaderProgram.setVec3("light.position", lightCubePos);
 		//shaderProgram.setVec3("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
 

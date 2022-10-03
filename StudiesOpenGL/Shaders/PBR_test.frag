@@ -92,7 +92,7 @@ void main()
     vec3 albedo     = pow(texture(albedo, texCoord).rgb, vec3(2.2));
     float metallic  = texture(metallic, texCoord).r;
     float roughness = texture(roughness, texCoord).r;
-    float ao        = texture(ao, texCoord).r;
+    float ao        = texture(ao, texCoord).r - 0.6f;
 
     vec3 N = getNormalFromMap();
     vec3 V = normalize(camPos - FragPos);

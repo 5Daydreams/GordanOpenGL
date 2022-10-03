@@ -186,6 +186,7 @@
     <None Include="Shaders\light.vert" />
     <None Include="Shaders\lightMethods.glsl" />
     <None Include="Shaders\multiLight.frag" />
+    <None Include="Shaders\PBR_test.frag" />
     <None Include="Shaders\pointLight.frag" />
     <None Include="Shaders\quadUV.frag" />
     <None Include="Shaders\quadUV.vert" />
@@ -193,6 +194,7 @@
     <None Include="Shaders\stencilOutline.frag" />
     <None Include="Shaders\stencilOutline.vert" />
     <None Include="Shaders\toonLightTexture.frag" />
+    <None Include="Shaders\worldSpaceVertexDisplacement.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EBO.h" />
