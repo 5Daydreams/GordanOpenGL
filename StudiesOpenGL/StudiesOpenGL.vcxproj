@@ -28,7 +28,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
@@ -83,8 +83,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)\Libraries\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)\Libraries\lib;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)Libraries\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Libraries\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -130,8 +130,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Libraries\include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -160,25 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="EBO.cpp" />
-    <ClCompile Include="glad.c" />
-    <ClCompile Include="Mesh.cpp" />
-    <ClCompile Include="Model.cpp" />
-    <ClCompile Include="ModelBuilder.cpp" />
-    <ClCompile Include="MonkeyHeadStencils.cpp" />
-    <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="stb.cpp" />
-    <ClCompile Include="Texture.cpp" />
-    <ClCompile Include="renderMain.cpp" />
-    <ClCompile Include="shaderClass.cpp" />
-    <ClCompile Include="VAO.cpp" />
-    <ClCompile Include="VBO.cpp" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Shaders\default.frag" />
     <None Include="Shaders\default.vert" />
-    <None Include="Shaders\defaultPBR.frag" />
     <None Include="Shaders\depthBuffer.frag" />
     <None Include="Shaders\directionalLight.frag" />
     <None Include="Shaders\importTest.frag" />
@@ -186,7 +168,6 @@
     <None Include="Shaders\light.vert" />
     <None Include="Shaders\lightMethods.glsl" />
     <None Include="Shaders\multiLight.frag" />
-    <None Include="Shaders\PBR_test.frag" />
     <None Include="Shaders\pointLight.frag" />
     <None Include="Shaders\quadUV.frag" />
     <None Include="Shaders\quadUV.vert" />
@@ -194,33 +175,37 @@
     <None Include="Shaders\stencilOutline.frag" />
     <None Include="Shaders\stencilOutline.vert" />
     <None Include="Shaders\toonLightTexture.frag" />
-    <None Include="Shaders\worldSpaceVertexDisplacement.vert" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="EBO.h" />
-    <ClInclude Include="Camera.h" />
-    <ClInclude Include="GLMacros.h" />
-    <ClInclude Include="IBuildable.h" />
     <ClInclude Include="Libraries\include\stb\stb_image.h" />
-    <ClInclude Include="Mesh.h" />
-    <ClInclude Include="Model.h" />
-    <ClInclude Include="ModelBuilder.h" />
-    <ClInclude Include="Renderer.h" />
-    <ClInclude Include="Texture.h" />
-    <ClInclude Include="shaderClass.h" />
-    <ClInclude Include="VAO.h" />
-    <ClInclude Include="VBO.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\EBO.h" />
+    <ClInclude Include="src\GLMacros.h" />
+    <ClInclude Include="src\IBuildable.h" />
+    <ClInclude Include="src\Mesh.h" />
+    <ClInclude Include="src\Model.h" />
+    <ClInclude Include="src\ModelBuilder.h" />
+    <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\shaderClass.h" />
+    <ClInclude Include="src\Texture.h" />
+    <ClInclude Include="src\VAO.h" />
+    <ClInclude Include="src\VBO.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="BaseNormals.png" />
-    <Image Include="FullBlack.png" />
-    <Image Include="FullWhite.png" />
-    <Image Include="Ghost_Alvin_512.png" />
-    <Image Include="KristerSphere.png" />
-    <Image Include="PebblesTile.png" />
-    <Image Include="PebblesTileSpecular.png" />
-    <Image Include="Red_flat.png" />
-    <Image Include="starfield.png" />
+    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\EBO.cpp" />
+    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\Model.cpp" />
+    <ClCompile Include="src\ModelBuilder.cpp" />
+    <ClCompile Include="src\MonkeyHeadStencils.cpp" />
+    <ClCompile Include="src\Renderer.cpp" />
+    <ClCompile Include="src\renderMain.cpp" />
+    <ClCompile Include="src\shaderClass.cpp" />
+    <ClCompile Include="src\stb.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src\VAO.cpp" />
+    <ClCompile Include="src\VBO.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
