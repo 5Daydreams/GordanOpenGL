@@ -37,45 +37,48 @@
     <None Include="Shaders\toonLightTexture.frag" />
     <None Include="Shaders\lightMethods.glsl" />
     <None Include="Shaders\importTest.frag" />
+    <None Include="Shaders\defaultPBR.frag" />
+    <None Include="Shaders\PBR_test.frag" />
+    <None Include="Shaders\worldSpaceVertexDisplacement.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Libraries\include\stb\stb_image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Camera.h">
+    <ClInclude Include="include\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\EBO.h">
+    <ClInclude Include="include\EBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\GLMacros.h">
+    <ClInclude Include="include\GLMacros.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\IBuildable.h">
+    <ClInclude Include="include\IBuildable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Mesh.h">
+    <ClInclude Include="include\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Model.h">
+    <ClInclude Include="include\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\ModelBuilder.h">
+    <ClInclude Include="include\ModelBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Renderer.h">
+    <ClInclude Include="include\Renderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaderClass.h">
+    <ClInclude Include="include\shaderClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Texture.h">
+    <ClInclude Include="include\Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\VAO.h">
+    <ClInclude Include="include\VAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\VBO.h">
+    <ClInclude Include="include\VBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
