@@ -142,7 +142,7 @@ int main()
 #pragma region mainObject shader and VAO
 
 	// Loading model
-	std::string pathString = "Models/sphere.fbx";
+	std::string pathString = "Models/Suzanne.fbx";
 
 	Model model = Model(pathString);
 
@@ -251,8 +251,8 @@ int main()
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		lightShader.Bind();
-		lightCubePos.x = 0.0f + 0.5f * (float)sin(glfwGetTime());
-		lightCubePos.z = 0.0f + 0.5f * (float)cos(glfwGetTime());
+		lightCubePos.x = 0.0f + 0.8f * (float)sin(glfwGetTime());
+		lightCubePos.z = 0.0f + 0.8f * (float)cos(glfwGetTime());
 		lightCubePos.y = 0.5f + 0.0f * (float)cos(glfwGetTime());
 		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightCubePos);
 		lightModelMatrix = glm::scale(lightModelMatrix, lightCubeScale);
@@ -280,7 +280,7 @@ int main()
 		time += 0.01f;
 
 		// Passing the camera position vector as a uniform to the object's shader file
-		// shaderProgram.setFloat("time", time);
+		shaderProgram.setFloat("time", time);
 		shaderProgram.setVec3("light.position", lightCubePos);
 		//shaderProgram.setVec3("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
 
@@ -290,10 +290,7 @@ int main()
 		// Regularly drawing the object 
 		model.Draw(shaderProgram);
 
-		//cubeVAO.Bind();
-		//mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
-		//shaderProgram.setMat4("model", mainObjectMatrix);
-		//GLCall(glDrawElements(GL_TRIANGLES, cubeEBO.count, GL_UNSIGNED_INT, 0));
+		//quadRenderer.Draw(shaderProgram);
 
 		// setup for rendering the light cube
 		lightShader.Bind();
