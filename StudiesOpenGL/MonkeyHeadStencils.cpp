@@ -399,8 +399,8 @@ when the stencil test passes and either there is no depth buffer or depth testin
 	shaderProgram.setVec3("material.diffuse", glm::vec3(0.3f, 0.5f, 0.8f));
 	shaderProgram.setVec3("material.specular", glm::vec3(0.1f, 0.1f, 0.1f));
 
-	//Texture texture("PebblesTile.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
-	//texture.texUnit(shaderProgram, "material.albedo", 0);
+	Texture texture("PebblesTile.png", GL_TEXTURE_2D, 0, GL_RGBA, GL_UNSIGNED_BYTE);
+	texture.texUnit(shaderProgram, "material.albedo", 0);
 	//Texture specular("PebblesTileSpecular.png", GL_TEXTURE_2D, 1, GL_RGBA, GL_UNSIGNED_BYTE);
 	//specular.texUnit(shaderProgram, "material.specular", 1);
 

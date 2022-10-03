@@ -67,8 +67,8 @@ GLuint cubeIndices[] =
 
 #pragma endregion
 
-const unsigned int SCREEN_WIDTH = 800;
-const unsigned int SCREEN_HEIGHT = 600;
+const unsigned int SCREEN_WIDTH = 1024;
+const unsigned int SCREEN_HEIGHT = 800;
 
 void ExitOnEsc(GLFWwindow* window)
 {
@@ -118,7 +118,7 @@ int renderingMain()
 	GLCall(glEnable(GL_DEPTH_TEST));
 	GLCall(glDepthFunc(GL_LESS));
 
-	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.3f, 3.0f));
+	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.0f, 1.8f));
 
 #pragma endregion
 
@@ -141,24 +141,12 @@ int renderingMain()
 #pragma region mainObject shader and VAO
 
 	// Loading model
-	std::string pathString = "Models/suzanne.fbx";
+	std::string pathString = "Models/Suzanne.fbx";
 
 	Model model = Model(pathString);
 
-	VAO cubeVAO;
-	cubeVAO.Bind();
-
-	VBO cubeVBO(cubeVertices, sizeof(cubeVertices));
-	EBO cubeEBO(cubeIndices, sizeof(cubeIndices));
-
-	cubeVAO.LinkAttrib(cubeVBO, 0, 3, GL_FLOAT, 3 * sizeof(float), (void*)0);
-
-	cubeVAO.Unbind();
-	cubeVBO.Unbind();
-	cubeEBO.Unbind();
-
-	// Generates Shader object using defualt.vert and default.frag shaders
-	Shader shaderProgram("default.vert", "toonLightTexture.frag");
+	// Generates Shader object using vert and frag shaders
+	Shader shaderProgram("default.vert", "PBR_test.frag");
 
 #pragma endregion
 
@@ -207,13 +195,13 @@ int renderingMain()
 #pragma region light object setup
 
 	// Preparing Light Coloring
-	glm::vec3 lightColor = glm::vec3(0.8f, 0.3f, 0.95f);
+	glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
-	glm::vec3 lightPos = glm::vec3(1.0f, 1.5f, 1.0f);
-	glm::vec3 lightScale = glm::vec3(0.05f, 0.05f, 0.05f);
+	glm::vec3 lightCubePos = glm::vec3(1.0f, 1.5f, 1.0f);
+	glm::vec3 lightCubeScale = glm::vec3(0.05f, 0.05f, 0.05f);
 	glm::mat4 lightModelMatrix = glm::mat4(1.0f);
-	lightModelMatrix = glm::scale(lightModelMatrix, lightScale);
-	lightModelMatrix = glm::translate(lightModelMatrix, lightPos);
+	lightModelMatrix = glm::scale(lightModelMatrix, lightCubeScale);
+	lightModelMatrix = glm::translate(lightModelMatrix, lightCubePos);
 
 	lightShader.Bind();
 	lightShader.setMat4("model", lightModelMatrix);
@@ -233,36 +221,23 @@ int renderingMain()
 	shaderProgram.Bind();
 	shaderProgram.setMat4("model", mainObjectMatrix);
 
-	glm::vec3 lightDir = glm::vec3(-1.0f, -1.0f, -1.0f);
-	shaderProgram.setVec3("dirLight.lightDir", lightDir);
-	shaderProgram.setVec3("dirLight.lightColor", lightColor);
+	shaderProgram.setVec3("light.position", lightCubePos);
+	shaderProgram.setVec3("light.color", lightColor);
+
+	Texture albedo("Red_flat.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
+	albedo.texUnit(shaderProgram, "albedo", 0);
+
+	Texture normals("BaseNormals.png", GL_TEXTURE_2D, 1, GL_RGB, GL_UNSIGNED_BYTE);
+	normals.texUnit(shaderProgram, "normalMap", 1);
 	
-	float highlightThreshold = 0.95f;
-	float shadeThreshold = 0.1f;
-	float textureEffect = 0.3f;
+	Texture metallic("FullBlack.png", GL_TEXTURE_2D, 2, GL_RGB, GL_UNSIGNED_BYTE);
+	metallic.texUnit(shaderProgram, "metallic", 2);
 
-	shaderProgram.setFloat("highlightThreshold", highlightThreshold);
-	shaderProgram.setFloat("shadeThreshold", shadeThreshold);
-	shaderProgram.setFloat("textureEffect", textureEffect);
+	Texture roughness("FullWhite.png", GL_TEXTURE_2D, 3, GL_RGB, GL_UNSIGNED_BYTE);
+	roughness.texUnit(shaderProgram, "roughness", 3);
 
-	// cyan tint
-	//glm::vec3 highlightColor = glm::vec3(0.1f, 0.8f, 0.9f);
-	//glm::vec3 keyColor = glm::vec3(0.1f, 0.5f, 0.8f);
-	//glm::vec3 shadeColor = glm::vec3(0.0f, 0.3f, 0.4f);
-
-	// red tint
-	glm::vec3 highlightColor = glm::vec3(0.95f, 0.1f, 0.2f);
-	glm::vec3 keyColor = glm::vec3(0.6f, 0.0f, 0.1f);
-	glm::vec3 shadeColor = glm::vec3(0.3f, 0.0f, 0.05f);
-
-	shaderProgram.setVec3("highlightColor", highlightColor);
-	shaderProgram.setVec3("keyColor", keyColor);
-	shaderProgram.setVec3("shadeColor", shadeColor);
-
-	shaderProgram.setVec2("renderTargetSize", SCREEN_WIDTH,SCREEN_HEIGHT);
-
-	Texture texture("starfield.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
-	texture.texUnit(shaderProgram, "blendTexture", 0);
+	Texture ao("FullWhite.png", GL_TEXTURE_2D, 4, GL_RGB, GL_UNSIGNED_BYTE);
+	ao.texUnit(shaderProgram, "ao", 4);
 
 	float rot = 0.0f;
 	float time = 0.0f;
@@ -275,11 +250,11 @@ int renderingMain()
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 
 		lightShader.Bind();
-		lightPos.x = 0.0f + 1.0f * (float)sin(glfwGetTime());
-		lightPos.z = 0.0f + 1.0f * (float)cos(glfwGetTime());
-		lightPos.y = 1.5f + 0.0f * (float)cos(glfwGetTime());
-		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightPos);
-		lightModelMatrix = glm::scale(lightModelMatrix, lightScale);
+		lightCubePos.x = 0.0f + 0.5f * (float)sin(glfwGetTime());
+		lightCubePos.z = 0.0f + 0.5f * (float)cos(glfwGetTime());
+		lightCubePos.y = 0.5f + 0.0f * (float)cos(glfwGetTime());
+		lightModelMatrix = glm::translate(glm::mat4(1.0f), lightCubePos);
+		lightModelMatrix = glm::scale(lightModelMatrix, lightCubeScale);
 		lightShader.setMat4("model", lightModelMatrix);
 
 		// camera events
@@ -288,17 +263,28 @@ int renderingMain()
 
 		// setup for rendering the main object
 		shaderProgram.Bind();
-		texture.Bind();
+		albedo.Bind();
+		normals.Bind();
+		metallic.Bind();
+		roughness.Bind();
+		ao.Bind();
+
 		shaderProgram.setVec3("camPos", camera.Position);
-		shaderProgram.setVec3("centerPos", glm::vec3(0.0f, 1.0f, 0.0f));
-		mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		mainObjectMatrix = glm::translate(glm::mat4(1.0f), mainObjectPos);
 		mainObjectMatrix = glm::rotate(mainObjectMatrix, rot, glm::vec3(0.0, 1.0, 1.0));
 		mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(0.3f, 0.3f, 0.3f));
 		shaderProgram.setMat4("model", mainObjectMatrix);
-		shaderProgram.setFloat("time", time);
 
-		rot += 0.01f;
-		time += 0.001f;
+		//rot += 0.01f;
+		time += 0.01f;
+
+		// Passing the camera position vector as a uniform to the object's shader file
+		// shaderProgram.setFloat("time", time);
+		shaderProgram.setVec3("light.position", lightCubePos);
+		//shaderProgram.setVec3("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
+
+		// Passing the camera model * projection matrix as a uniform to the object's shader file
+		camera.MatrixUniform(shaderProgram, "camMatrix");
 
 		// Regularly drawing the object 
 		model.Draw(shaderProgram);
@@ -307,15 +293,6 @@ int renderingMain()
 		//mainObjectMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -1.0f, 0.0f));
 		//shaderProgram.setMat4("model", mainObjectMatrix);
 		//GLCall(glDrawElements(GL_TRIANGLES, cubeEBO.count, GL_UNSIGNED_INT, 0));
-
-		shaderProgram.Bind();
-		// Passing the camera position vector as a uniform to the object's shader file
-		glm::vec3 spotlightDir = mainObjectPos - lightPos;
-		shaderProgram.setVec3("dirLight.lightDir", spotlightDir);
-		//shaderProgram.setVec3("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
-
-		// Passing the camera model * projection matrix as a uniform to the object's shader file
-		camera.MatrixUniform(shaderProgram, "camMatrix");
 
 		// setup for rendering the light cube
 		lightShader.Bind();
@@ -335,7 +312,11 @@ int renderingMain()
 
 	// Deleting the abstracted GPU objects
 	shaderProgram.Delete();
-	texture.Delete();
+	albedo.Delete();
+	normals.Delete();
+	metallic.Delete();
+	roughness.Delete();
+	ao.Delete();
 
 	lightVAO.Delete();
 	lightVBO.Delete();
