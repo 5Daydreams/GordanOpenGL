@@ -19,4 +19,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Library Include="x64\Debug\glfw3.lib" />
+    <Library Include="x64\Debug\assimp-vc142-mtd.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="x64\Debug\assimp-vc142-mtd.dll" />
+    <None Include="x64\Debug\assimp-vc142-mtd.dll.recipe" />
+    <None Include="x64\Debug\assimp-vc142-mtd.pdb" />
+    <None Include="x64\Debug\assimp-vc142-mtd.ilk" />
+    <None Include="x64\Debug\assimp-vc142-mtd.exp" />
+  </ItemGroup>
 </Project>

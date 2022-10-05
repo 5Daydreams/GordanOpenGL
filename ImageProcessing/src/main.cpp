@@ -36,8 +36,8 @@ GLuint quadIndices[]
 
 #pragma endregion
 
-const unsigned int SCREEN_WIDTH = 1024;
-const unsigned int SCREEN_HEIGHT = 800;
+const unsigned int SCREEN_WIDTH = 512;
+const unsigned int SCREEN_HEIGHT = 512;
 
 void ExitOnEsc(GLFWwindow* window)
 {
@@ -87,11 +87,11 @@ int main()
 	GLCall(glEnable(GL_DEPTH_TEST));
 	GLCall(glDepthFunc(GL_LESS));
 
-	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.0f, 1.8f));
+	Camera camera(SCREEN_WIDTH, SCREEN_HEIGHT, glm::vec3(0.0f, 0.0f, 1.0f));
 
 #pragma endregion
 
-#pragma region Initializing Quad
+#pragma region Initializing single Quad & its Shader
 
 	VAO quadVAO;
 	quadVAO.Bind();
@@ -108,17 +108,10 @@ int main()
 	// Generates Shader object using vert and frag shaders
 	Shader quadShader("quadUV.vert", "quadUV.frag");
 
-	// Are these really necessary?
-	quadVAO.Unbind();
-	quadVBO.Unbind();
-	quadEBO.Unbind();
-
 #pragma endregion
 
-	float rot = 0.0f;
+	//float rot = 0.0f;
 	float time = 0.0f;
-
-#pragma endregion
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -134,6 +127,10 @@ int main()
 
 		//rot += 0.01f;
 		time += 0.01f;
+
+		glm::mat4 quadMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+		quadShader.setMat4("model", quadMatrix );
+		quadShader.setFloat("time", time);
 
 		// Passing the camera model * projection matrix as a uniform to the object's shader file
 		camera.MatrixUniform(quadShader, "camMatrix");
