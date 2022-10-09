@@ -134,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Time.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\StudiesOpenGL\StudiesOpenGL.vcxproj">
@@ -162,6 +163,9 @@
     <Image Include="Textures\PebblesTileSpecular.png" />
     <Image Include="Textures\Red_flat.png" />
     <Image Include="Textures\starfield.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Time.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

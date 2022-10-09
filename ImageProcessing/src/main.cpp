@@ -17,6 +17,7 @@
 #include "Model.h"
 #include "ModelBuilder.h"
 #include "Renderer.h"
+#include "MazeGame/src/Time.h"
 
 #pragma region quadMesh
 
@@ -76,6 +77,8 @@ int main()
 		std::cout << "Failed to initialize OpenGL context" << std::endl;
 		return -1;
 	}
+
+	Time time;
 
 	// Fixed that thing that Unreal does, where it flips textures upside down
 	stbi_set_flip_vertically_on_load(true);

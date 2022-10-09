@@ -81,6 +81,9 @@
     <ClInclude Include="include\VBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp">

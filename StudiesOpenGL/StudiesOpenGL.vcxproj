@@ -196,6 +196,7 @@
     <None Include="Shaders\worldSpaceVertexDisplacement.vert" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Test.h" />
     <ClInclude Include="Libraries\include\stb\stb_image.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\EBO.h" />
