@@ -114,7 +114,7 @@ int main()
 #pragma endregion
 
 	//float rot = 0.0f;
-	float time = 0.0f;
+	//float time = 0.0f;
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -129,7 +129,7 @@ int main()
 		quadShader.Bind();
 
 		//rot += 0.01f;
-		time += 0.01f;
+		//time += 0.01f;
 
 		glm::mat4 quadMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.0f));
 		quadShader.setMat4("model", quadMatrix );

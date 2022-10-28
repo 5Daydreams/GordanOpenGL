@@ -90,7 +90,7 @@ int main()
 
 	// create a window - notice the distinction between Window and Monitor - 
 	GLFWmonitor* fullscreen = NULL;
-	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "I am a window, my name is Doorothy", fullscreen, NULL);
+	GLFWwindow* window = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Hi youtube! I'm a window!", fullscreen, NULL);
 
 	if (window == NULL)
 	{
@@ -199,7 +199,7 @@ int main()
 	glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
 	glm::vec3 lightCubePos = glm::vec3(1.0f, 1.5f, 1.0f);
-	glm::vec3 lightCubeScale = glm::vec3(0.05f, 0.05f, 0.05f);
+	glm::vec3 lightCubeScale = glm::vec3(0.02f, 0.02f, 0.02f);
 	glm::mat4 lightModelMatrix = glm::mat4(1.0f);
 	lightModelMatrix = glm::scale(lightModelMatrix, lightCubeScale);
 	lightModelMatrix = glm::translate(lightModelMatrix, lightCubePos);
@@ -225,7 +225,7 @@ int main()
 	shaderProgram.setVec3("light.position", lightCubePos);
 	shaderProgram.setVec3("light.color", lightColor);
 
-	Texture albedo("Textures/Red_flat.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture albedo("Textures/FullGray.png", GL_TEXTURE_2D, 0, GL_RGB, GL_UNSIGNED_BYTE);
 	albedo.texUnit(shaderProgram, "albedo", 0);
 
 	Texture normals("Textures/BaseNormals.png", GL_TEXTURE_2D, 1, GL_RGB, GL_UNSIGNED_BYTE);
@@ -234,13 +234,12 @@ int main()
 	Texture metallic("Textures/FullBlack.png", GL_TEXTURE_2D, 2, GL_RGB, GL_UNSIGNED_BYTE);
 	metallic.texUnit(shaderProgram, "metallic", 2);
 
-	Texture roughness("Textures/FullWhite.png", GL_TEXTURE_2D, 3, GL_RGB, GL_UNSIGNED_BYTE);
+	Texture roughness("Textures/FullGray.png", GL_TEXTURE_2D, 3, GL_RGB, GL_UNSIGNED_BYTE);
 	roughness.texUnit(shaderProgram, "roughness", 3);
 
 	Texture ao("Textures/FullWhite.png", GL_TEXTURE_2D, 4, GL_RGB, GL_UNSIGNED_BYTE);
 	ao.texUnit(shaderProgram, "ao", 4);
 
-	float rot = 0.0f;
 	float time = 0.0f;
 
 #pragma endregion
@@ -272,15 +271,14 @@ int main()
 
 		shaderProgram.setVec3("camPos", camera.Position);
 		mainObjectMatrix = glm::translate(glm::mat4(1.0f), mainObjectPos);
-		mainObjectMatrix = glm::rotate(mainObjectMatrix, rot, glm::vec3(0.0, 1.0, 1.0));
+		mainObjectMatrix = glm::rotate(mainObjectMatrix, time, glm::vec3(0.0, 1.0, 1.0));
 		mainObjectMatrix = glm::scale(mainObjectMatrix, glm::vec3(0.3f, 0.3f, 0.3f));
 		shaderProgram.setMat4("model", mainObjectMatrix);
 
-		//rot += 0.01f;
-		time += 0.01f;
+		time += 0.015f;
 
 		// Passing the camera position vector as a uniform to the object's shader file
-		shaderProgram.setFloat("time", time);
+		// shaderProgram.setFloat("time", time);
 		shaderProgram.setVec3("light.position", lightCubePos);
 		//shaderProgram.setVec3("camPos", camera.Position.x, camera.Position.y, camera.Position.z);
 
